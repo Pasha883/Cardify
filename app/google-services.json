@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "521593324927",
+    "firebase_url": "https://cardify-82e48-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "cardify-82e48",
+    "storage_bucket": "cardify-82e48.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:521593324927:android:d442ec39b956aab6c1464a",
+        "android_client_info": {
+          "package_name": "com.example.cardify"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyACi0lMX7nvc14oUeNc8LAyfy96RyZlflY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

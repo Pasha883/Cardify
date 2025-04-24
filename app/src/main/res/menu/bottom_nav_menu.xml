@@ -1,0 +1,19 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_saved"
+        android:icon="@drawable/ic_saved_cards"
+        android:title="Сохранённые" />
+    <item
+        android:id="@+id/nav_my"
+        android:icon="@drawable/ic_my_cards"
+        android:title="Мои визитки" />
+    <item
+        android:id="@+id/nav_add"
+        android:icon="@drawable/ic_add"
+        android:title="Добавить" />
+    <item
+        android:id="@+id/nav_settings"
+        android:icon="@drawable/ic_settings"
+        android:title="Настройки" />
+</menu>
+
