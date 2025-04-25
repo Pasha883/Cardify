@@ -1,6 +1,7 @@
 package com.example.cardify;
 
 import android.os.Bundle;
+import android.widget.FrameLayout;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,6 +13,8 @@ import androidx.fragment.app.Fragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
+    private FrameLayout fragmentContainer;
+    private BottomNavigationView bottomNavigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,6 +24,9 @@ public class MainActivity extends AppCompatActivity {
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
         bottomNav.setOnItemSelectedListener(navListener);
 
+        fragmentContainer = findViewById(R.id.fragment_container);
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
+
 
         // По умолчанию открываем SavedCardsFragment
         if (savedInstanceState == null) {
@@ -29,6 +35,12 @@ public class MainActivity extends AppCompatActivity {
                     .commit();
         }
         bottomNav.setSelectedItemId(R.id.nav_saved); // <--- добавь эту строку
+
+        // Автоматическая установка нижнего отступа под BottomNavigationView
+        bottomNavigationView.post(() -> {
+            int bottomHeight = bottomNavigationView.getHeight();
+            fragmentContainer.setPadding(0, 0, 0, bottomHeight);
+        });
 
     }
 
