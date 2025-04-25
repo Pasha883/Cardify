@@ -25,23 +25,23 @@
             android:id="@+id/et_company_spec"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Сфера деятельности"
+            android:hint="Специализация"
             android:inputType="text"
             android:drawableStart="@drawable/ic_specialization"
             android:padding="12dp"
             android:layout_marginTop="12dp" />
 
+        <!-- Описание -->
         <EditText
             android:id="@+id/et_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Описание"
-            android:inputType="text"
-            android:minLines="3"
-            android:gravity="top"
-            android:drawableStart="@drawable/ic_description"
+            android:drawableLeft="@drawable/ic_description"
             android:padding="12dp"
-            android:layout_marginTop="12dp" />
+            android:inputType="textMultiLine"
+            android:minLines="3"
+            android:maxLines="5" />
 
         <EditText
             android:id="@+id/et_email"
@@ -88,7 +88,7 @@
             android:id="@+id/btn_save_changes"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Сохранить изменения"
+            android:text="Создать"
             android:drawableLeft="@drawable/ic_check"
             android:layout_marginTop="24dp"
             android:padding="12dp" />

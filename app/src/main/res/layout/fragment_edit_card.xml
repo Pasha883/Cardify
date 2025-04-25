@@ -27,6 +27,17 @@
             android:drawableLeft="@drawable/ic_specialization"
             android:padding="12dp" />
 
+        <!-- Описание -->
+        <EditText
+            android:id="@+id/edit_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Описание"
+            android:drawableLeft="@drawable/ic_description"
+            android:padding="12dp"
+            android:inputType="textMultiLine"
+            android:minLines="3"
+            android:maxLines="5" />
 
         <!-- Email -->
         <EditText
@@ -58,7 +69,6 @@
             android:padding="12dp"
             android:inputType="textUri" />
 
-
         <!-- Телеграм -->
         <EditText
             android:id="@+id/edit_address"
@@ -79,5 +89,16 @@
             android:drawableLeft="@drawable/ic_check"
             android:layout_marginTop="24dp"
             android:padding="12dp" />
+
+        <Button
+            android:id="@+id/btn_delete_card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="Удалить визитку"
+            android:drawableLeft="@drawable/ic_delete"
+            android:backgroundTint="@android:color/holo_red_dark"
+            android:textColor="#FFFFFF"/>
+
     </LinearLayout>
 </ScrollView>

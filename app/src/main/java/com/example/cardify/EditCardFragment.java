@@ -1,5 +1,7 @@
 package com.example.cardify;
 
+import android.app.AlertDialog;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -18,7 +20,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class EditCardFragment extends Fragment {
 
-    private EditText editCompanyName, editCompanySpec, editPhone, editEmail, editAddress, editWebsite;
+    private EditText editCompanyName, editCompanySpec, editPhone, editEmail, editAddress, editWebsite, editDescription;
     private Button btnSaveChanges;
 
     private VizitkaCreated card;
@@ -44,6 +46,7 @@ public class EditCardFragment extends Fragment {
         editEmail = view.findViewById(R.id.edit_email);
         editAddress = view.findViewById(R.id.edit_address);
         editWebsite = view.findViewById(R.id.edit_website);
+        editDescription = view.findViewById(R.id.edit_description);
         btnSaveChanges = view.findViewById(R.id.btn_save_changes);
 
         if (getArguments() != null) {
@@ -54,6 +57,40 @@ public class EditCardFragment extends Fragment {
         }
 
         btnSaveChanges.setOnClickListener(v -> saveChanges());
+        Button deleteBtn = view.findViewById(R.id.btn_delete_card);
+        deleteBtn.setOnClickListener(v -> {
+            AlertDialog dialog = new AlertDialog.Builder(requireContext())
+                    .setTitle("Удалить визитку?")
+                    .setMessage("Вы уверены? Это действие необратимо.")
+                    .setPositiveButton("Да", (dialogInterface, which) -> {
+                        String userId = "userID001";
+                        String cardId = card.id;
+
+                        DatabaseReference db = FirebaseDatabase.getInstance().getReference();
+
+                        // Удаляем из /vizitCards
+                        db.child("vizitcards").child(cardId).removeValue();
+
+                        // Удаляем из /users/{userId}/createdVizitcards
+                        db.child("users").child(userId).child("createdVizitcards").child(cardId).removeValue()
+                                .addOnSuccessListener(aVoid -> {
+                                    Toast.makeText(getContext(), "Визитка удалена", Toast.LENGTH_SHORT).show();
+                                    requireActivity().onBackPressed();
+                                })
+                                .addOnFailureListener(e ->
+                                        Toast.makeText(getContext(), "Ошибка удаления", Toast.LENGTH_SHORT).show()
+                                );
+                    })
+                    .setNegativeButton("Нет", (dialogInterface, which) -> dialogInterface.dismiss())
+                    .create();
+
+            dialog.setOnShowListener(dialogInterface -> {
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.RED);
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.GRAY);
+            });
+
+            dialog.show();
+        });
 
         return view;
     }
@@ -65,6 +102,7 @@ public class EditCardFragment extends Fragment {
         editEmail.setText(card.email);
         editAddress.setText(card.TG);
         editWebsite.setText(card.site);
+        editDescription.setText(card.description);
     }
 
     private void saveChanges() {
@@ -74,6 +112,7 @@ public class EditCardFragment extends Fragment {
         String updatedEmail = editEmail.getText().toString().trim();
         String updatedAddress = editAddress.getText().toString().trim();
         String updatedWebsite = editWebsite.getText().toString().trim();
+        String updatedDescription = editDescription.getText().toString().trim();
 
         if (TextUtils.isEmpty(updatedName)) {
             editCompanyName.setError("Название обязательно");
@@ -86,10 +125,11 @@ public class EditCardFragment extends Fragment {
         card.email = updatedEmail;
         card.TG = updatedAddress;
         card.site = updatedWebsite;
+        card.description = updatedDescription;
 
         DatabaseReference ref = FirebaseDatabase.getInstance()
                 .getReference("vizitcards")
-                .child(card.id); // убедись, что поле id у Vizitka проставлено
+                .child(card.id);
 
         ref.setValue(card)
                 .addOnSuccessListener(unused -> {

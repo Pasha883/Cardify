@@ -1,14 +1,19 @@
 package com.example.cardify;
 
+import android.app.AlertDialog;
+import android.graphics.Color;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.fragment.app.Fragment;
+
+import com.google.firebase.database.FirebaseDatabase;
 
 public class CardDetailsFragment extends Fragment {
 
@@ -40,6 +45,41 @@ public class CardDetailsFragment extends Fragment {
         setField(view, R.id.container_site, R.id.tv_site, vizitka.site);
         setField(view, R.id.container_tg, R.id.tv_tg, vizitka.TG);
 
+        // Кнопка удаления
+        Button deleteBtn = view.findViewById(R.id.btn_delete_card);
+        deleteBtn.setOnClickListener(v -> {
+            AlertDialog dialog = new AlertDialog.Builder(requireContext())
+                    .setTitle("Удалить визитку?")
+                    .setMessage("Вы уверены? Это действие необратимо.")
+                    .setPositiveButton("Да", (dialogInterface, which) -> {
+                        String userId = "userID001";
+                        String cardId = vizitka.id;
+
+                        FirebaseDatabase.getInstance()
+                                .getReference("users")
+                                .child(userId)
+                                .child("savedVizitcards")
+                                .child(cardId)
+                                .removeValue()
+                                .addOnSuccessListener(aVoid -> {
+                                    Toast.makeText(getContext(), "Визитка удалена", Toast.LENGTH_SHORT).show();
+                                    requireActivity().onBackPressed();
+                                })
+                                .addOnFailureListener(e ->
+                                        Toast.makeText(getContext(), "Ошибка удаления", Toast.LENGTH_SHORT).show());
+                    })
+                    .setNegativeButton("Нет", (dialogInterface, which) -> dialogInterface.dismiss())
+                    .create();
+
+            dialog.setOnShowListener(dialogInterface -> {
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.RED);
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.GRAY);
+            });
+
+            dialog.show();
+        });
+
+
         return view;
     }
 
@@ -54,6 +94,7 @@ public class CardDetailsFragment extends Fragment {
             tv.setText(value);
         }
     }
+
     private void setField(View view, int textViewId, String value) {
         TextView tv = view.findViewById(textViewId);
 
