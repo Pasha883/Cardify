@@ -51,23 +51,36 @@ public class SavedCardsFragment extends Fragment {
     }
 
     private void loadVizitki() {
-        vizitRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        String userId = "userID001";
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("users")
+                .child(userId).child("savedVizitcards");
+
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 vizitkaList.clear();
                 for (DataSnapshot cardSnap : snapshot.getChildren()) {
-                    Vizitka card = cardSnap.getValue(Vizitka.class);
-                    if (card != null) {
-                        vizitkaList.add(card);
-                    }
+                    String cardId = cardSnap.getKey();
+                    FirebaseDatabase.getInstance().getReference("vizitcards")
+                            .child(cardId)
+                            .addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot cardSnapshot) {
+                                    Vizitka card = cardSnapshot.getValue(Vizitka.class);
+                                    if (card != null) {
+                                        vizitkaList.add(card);
+                                        adapter.notifyDataSetChanged();
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) { }
+                            });
                 }
-                adapter.notifyDataSetChanged();
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(getContext(), "Ошибка загрузки данных", Toast.LENGTH_SHORT).show();
-            }
+            public void onCancelled(@NonNull DatabaseError error) { }
         });
     }
 }

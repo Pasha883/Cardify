@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
@@ -24,8 +25,8 @@ import java.util.List;
 public class MyCardsFragment extends Fragment {
     private RecyclerView recyclerView;
     private Button btnCreateCard;
-    private List<Vizitka> myCardsList = new ArrayList<>();
-    private VizitkaAdapter adapter;
+    private List<VizitkaCreated> myCardsList = new ArrayList<>();
+    private VizitkaCreatedAdapter adapter;
 
     @Nullable
     @Override
@@ -36,7 +37,7 @@ public class MyCardsFragment extends Fragment {
 
         recyclerView = view.findViewById(R.id.recycler_my_cards);
         btnCreateCard = view.findViewById(R.id.btn_create_card);
-        adapter = new VizitkaAdapter(myCardsList);
+        adapter = new VizitkaCreatedAdapter(myCardsList, getContext());
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
 
@@ -54,7 +55,7 @@ public class MyCardsFragment extends Fragment {
     }
 
     private void loadMyCards() {
-        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        String userId = "userID001";
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("users")
                 .child(userId).child("createdVizitcards");
 
@@ -69,7 +70,7 @@ public class MyCardsFragment extends Fragment {
                             .addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot cardSnapshot) {
-                                    Vizitka card = cardSnapshot.getValue(Vizitka.class);
+                                    VizitkaCreated card = cardSnapshot.getValue(VizitkaCreated.class);
                                     if (card != null) {
                                         myCardsList.add(card);
                                         adapter.notifyDataSetChanged();
