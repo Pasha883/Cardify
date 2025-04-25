@@ -1,14 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AddCardFragment">
+    android:padding="16dp">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Add vizitka" />
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="24dp">
 
-</FrameLayout>
+        <EditText
+            android:id="@+id/et_company_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Название компании"
+            android:inputType="textPersonName"
+            android:drawableStart="@drawable/ic_company"
+            android:padding="12dp" />
+
+        <EditText
+            android:id="@+id/et_company_spec"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Сфера деятельности"
+            android:inputType="text"
+            android:drawableStart="@drawable/ic_specialization"
+            android:padding="12dp"
+            android:layout_marginTop="12dp" />
+
+        <EditText
+            android:id="@+id/et_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Описание"
+            android:inputType="text"
+            android:minLines="3"
+            android:gravity="top"
+            android:drawableStart="@drawable/ic_description"
+            android:padding="12dp"
+            android:layout_marginTop="12dp" />
+
+        <EditText
+            android:id="@+id/et_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Email"
+            android:inputType="textEmailAddress"
+            android:drawableStart="@drawable/ic_email"
+            android:padding="12dp"
+            android:layout_marginTop="12dp" />
+
+        <EditText
+            android:id="@+id/et_phone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Телефон"
+            android:inputType="phone"
+            android:drawableStart="@drawable/ic_phone"
+            android:padding="12dp"
+            android:layout_marginTop="12dp" />
+
+        <EditText
+            android:id="@+id/et_site"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Сайт"
+            android:inputType="textUri"
+            android:drawableStart="@drawable/ic_web"
+            android:padding="12dp"
+            android:layout_marginTop="12dp" />
+
+        <EditText
+            android:id="@+id/et_telegram"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Telegram"
+            android:inputType="text"
+            android:drawableStart="@drawable/ic_telegram"
+            android:padding="12dp"
+            android:layout_marginTop="12dp" />
+
+        <!-- Кнопка сохранить -->
+        <Button
+            android:id="@+id/btn_save_changes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Сохранить изменения"
+            android:drawableLeft="@drawable/ic_check"
+            android:layout_marginTop="24dp"
+            android:padding="12dp" />
+
+    </LinearLayout>
+</ScrollView>

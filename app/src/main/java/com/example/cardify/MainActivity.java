@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
                 } else if (item.getItemId() == R.id.nav_my) {
                     selectedFragment = new MyCardsFragment();
                 } else if (item.getItemId() == R.id.nav_add) {
-                    selectedFragment = new AddCardFragment();
+                    selectedFragment = new SaveCardFragment();
                 } else if (item.getItemId() == R.id.nav_settings) {
                     selectedFragment = new SettingsFragment();
                 }

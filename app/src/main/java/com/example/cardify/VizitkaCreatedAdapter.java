@@ -43,7 +43,7 @@ public class VizitkaCreatedAdapter extends RecyclerView.Adapter<VizitkaCreatedAd
         });
         holder.moreButton.setOnClickListener(v -> {
             FragmentActivity activity = (FragmentActivity) context;
-            Fragment fragment = EditCardFragment.newInstance("param1", "param2");
+            Fragment fragment = EditCardFragment.newInstance(card);
             activity.getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.fragment_container, fragment)

@@ -1,64 +1,101 @@
 package com.example.cardify;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link EditCardFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 public class EditCardFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private EditText editCompanyName, editCompanySpec, editPhone, editEmail, editAddress, editWebsite;
+    private Button btnSaveChanges;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private VizitkaCreated card;
 
-    public EditCardFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment EditCardFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static EditCardFragment newInstance(String param1, String param2) {
+    public static EditCardFragment newInstance(VizitkaCreated card) {
         EditCardFragment fragment = new EditCardFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putSerializable("card", card);
         fragment.setArguments(args);
         return fragment;
     }
 
+    @Nullable
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_edit_card, container, false);
+
+        editCompanyName = view.findViewById(R.id.edit_company_name);
+        editCompanySpec = view.findViewById(R.id.edit_company_spec);
+        editPhone = view.findViewById(R.id.edit_phone);
+        editEmail = view.findViewById(R.id.edit_email);
+        editAddress = view.findViewById(R.id.edit_address);
+        editWebsite = view.findViewById(R.id.edit_website);
+        btnSaveChanges = view.findViewById(R.id.btn_save_changes);
+
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            card = (VizitkaCreated) getArguments().getSerializable("card");
+            if (card != null) {
+                fillFields(card);
+            }
         }
+
+        btnSaveChanges.setOnClickListener(v -> saveChanges());
+
+        return view;
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_edit_card, container, false);
+    private void fillFields(VizitkaCreated card) {
+        editCompanyName.setText(card.companyName);
+        editCompanySpec.setText(card.companySpec);
+        editPhone.setText(card.phone);
+        editEmail.setText(card.email);
+        editAddress.setText(card.TG);
+        editWebsite.setText(card.site);
+    }
+
+    private void saveChanges() {
+        String updatedName = editCompanyName.getText().toString().trim();
+        String updatedSpec = editCompanySpec.getText().toString().trim();
+        String updatedPhone = editPhone.getText().toString().trim();
+        String updatedEmail = editEmail.getText().toString().trim();
+        String updatedAddress = editAddress.getText().toString().trim();
+        String updatedWebsite = editWebsite.getText().toString().trim();
+
+        if (TextUtils.isEmpty(updatedName)) {
+            editCompanyName.setError("Название обязательно");
+            return;
+        }
+
+        card.companyName = updatedName;
+        card.companySpec = updatedSpec;
+        card.phone = updatedPhone;
+        card.email = updatedEmail;
+        card.TG = updatedAddress;
+        card.site = updatedWebsite;
+
+        DatabaseReference ref = FirebaseDatabase.getInstance()
+                .getReference("vizitcards")
+                .child(card.id); // убедись, что поле id у Vizitka проставлено
+
+        ref.setValue(card)
+                .addOnSuccessListener(unused -> {
+                    Toast.makeText(getContext(), "Изменения сохранены", Toast.LENGTH_SHORT).show();
+                    requireActivity().getSupportFragmentManager().popBackStack();
+                })
+                .addOnFailureListener(e -> Toast.makeText(getContext(), "Ошибка: " + e.getMessage(), Toast.LENGTH_LONG).show());
     }
 }

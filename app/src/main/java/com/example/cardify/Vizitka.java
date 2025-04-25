@@ -3,6 +3,8 @@ package com.example.cardify;
 import java.io.Serializable;
 
 public class Vizitka implements Serializable {
+    public String id; // <-- добавлено поле ID
+
     public String TG;
     public String companyName;
     public String companySpec;
@@ -13,8 +15,9 @@ public class Vizitka implements Serializable {
 
     public Vizitka() {} // Пустой конструктор обязателен для Firebase
 
-    public Vizitka(String TG, String companyName, String companySpec, String description,
+    public Vizitka(String id, String TG, String companyName, String companySpec, String description,
                    String email, String phone, String site) {
+        this.id = id;
         this.TG = TG;
         this.companyName = companyName;
         this.companySpec = companySpec;

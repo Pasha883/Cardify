@@ -1,14 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".EditCardFragment">
+    android:padding="16dp">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Edit vizitka" />
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-</FrameLayout>
+        <!-- Название компании -->
+        <EditText
+            android:id="@+id/edit_company_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Название компании"
+            android:drawableLeft="@drawable/ic_company"
+            android:padding="12dp" />
+
+        <!-- Специализация -->
+        <EditText
+            android:id="@+id/edit_company_spec"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Специализация"
+            android:drawableLeft="@drawable/ic_specialization"
+            android:padding="12dp" />
+
+
+        <!-- Email -->
+        <EditText
+            android:id="@+id/edit_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Email"
+            android:drawableLeft="@drawable/ic_email"
+            android:padding="12dp"
+            android:inputType="textEmailAddress" />
+
+        <!-- Телефон -->
+        <EditText
+            android:id="@+id/edit_phone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Телефон"
+            android:drawableLeft="@drawable/ic_phone"
+            android:padding="12dp"
+            android:inputType="phone" />
+
+        <!-- Сайт -->
+        <EditText
+            android:id="@+id/edit_website"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Сайт"
+            android:drawableLeft="@drawable/ic_web"
+            android:padding="12dp"
+            android:inputType="textUri" />
+
+
+        <!-- Телеграм -->
+        <EditText
+            android:id="@+id/edit_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Телеграм"
+            android:drawableLeft="@drawable/ic_telegram"
+            android:padding="12dp" />
+
+
+
+        <!-- Кнопка сохранить -->
+        <Button
+            android:id="@+id/btn_save_changes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Сохранить изменения"
+            android:drawableLeft="@drawable/ic_check"
+            android:layout_marginTop="24dp"
+            android:padding="12dp" />
+    </LinearLayout>
+</ScrollView>
