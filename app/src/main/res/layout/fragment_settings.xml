@@ -162,7 +162,8 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:padding="16dp"
-                    android:gravity="center_vertical">
+                    android:gravity="center_vertical"
+                    android:background="?attr/selectableItemBackground"> <!-- вот эта строка добавлена -->
 
                     <ImageView
                         android:layout_width="24dp"
@@ -177,6 +178,7 @@
                         android:textColor="#000000"
                         android:textSize="16sp" />
                 </LinearLayout>
+
 
                 <!-- Разделитель -->
                 <View
