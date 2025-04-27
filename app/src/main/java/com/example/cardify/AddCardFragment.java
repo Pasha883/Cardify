@@ -19,6 +19,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class AddCardFragment extends Fragment {
 
     private EditText etCompanyName, etCompanySpec, etDescription, etEmail, etPhone, etSite, etTG;
@@ -54,7 +57,7 @@ public class AddCardFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 int nextId = 1;
                 for (DataSnapshot lastCard : snapshot.getChildren()) {
-                    String lastKey = lastCard.getKey(); // cardID003
+                    String lastKey = lastCard.getKey(); // Например, "cardID003"
                     if (lastKey != null && lastKey.startsWith("cardID")) {
                         String numberPart = lastKey.substring(6);
                         try {
@@ -88,10 +91,19 @@ public class AddCardFragment extends Fragment {
             return;
         }
 
-        Vizitka newCard = new Vizitka(cardId,tg, name, spec, desc, email, phone, site);
-        newCard.id = cardId;
+        // Сохраняем визитку как HashMap, чтобы добавить поле "users"
+        Map<String, Object> cardData = new HashMap<>();
+        cardData.put("id", cardId);
+        cardData.put("companyName", name);
+        cardData.put("companySpec", spec);
+        cardData.put("description", desc);
+        cardData.put("email", email);
+        cardData.put("phone", phone);
+        cardData.put("site", site);
+        cardData.put("TG", tg);
+        cardData.put("users", 0); // Важно: users = 0 при создании
 
-        cardsRef.child(cardId).setValue(newCard).addOnSuccessListener(unused -> {
+        cardsRef.child(cardId).setValue(cardData).addOnSuccessListener(unused -> {
             userRef.child("createdVizitcards").child(cardId).setValue("")
                     .addOnSuccessListener(unused1 -> {
                         Toast.makeText(getContext(), "Визитка создана", Toast.LENGTH_SHORT).show();
