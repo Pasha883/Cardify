@@ -28,8 +28,7 @@ public class SavedCardsFragment extends Fragment {
     private List<Vizitka> vizitkaList;
 
     private DatabaseReference vizitRef;
-
-    //ИЗМЕНИТЬ АЛГОРИТМ ПРИЁМА ВИЗИТОК
+    private final String userId = "userID001"; // Вынес отдельно
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -51,31 +50,44 @@ public class SavedCardsFragment extends Fragment {
     }
 
     private void loadVizitki() {
-        String userId = "userID001";
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("users")
+        DatabaseReference savedRef = FirebaseDatabase.getInstance().getReference("users")
                 .child(userId).child("savedVizitcards");
 
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+        savedRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 vizitkaList.clear();
+                if (!snapshot.exists()) {
+                    adapter.notifyDataSetChanged();
+                    return;
+                }
+
                 for (DataSnapshot cardSnap : snapshot.getChildren()) {
                     String cardId = cardSnap.getKey();
-                    FirebaseDatabase.getInstance().getReference("vizitcards")
-                            .child(cardId)
-                            .addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot cardSnapshot) {
-                                    Vizitka card = cardSnapshot.getValue(Vizitka.class);
-                                    if (card != null) {
-                                        vizitkaList.add(card);
-                                        adapter.notifyDataSetChanged();
-                                    }
-                                }
+                    if (cardId == null) continue;
 
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) { }
-                            });
+                    vizitRef.child(cardId).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot cardSnapshot) {
+                            if (cardSnapshot.exists()) {
+                                Vizitka card = cardSnapshot.getValue(Vizitka.class);
+                                if (card != null) {
+                                    vizitkaList.add(card);
+                                    adapter.notifyDataSetChanged();
+                                }
+                            } else {
+                                // Если визитка не найдена в базе, удалить её из savedVizitcards
+                                savedRef.child(cardId).removeValue()
+                                        .addOnSuccessListener(unused -> {
+                                            // Можно показать короткий тост об удалении (по желанию)
+                                            // Toast.makeText(getContext(), "Удалена несуществующая визитка", Toast.LENGTH_SHORT).show();
+                                        });
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) { }
+                    });
                 }
             }
 
