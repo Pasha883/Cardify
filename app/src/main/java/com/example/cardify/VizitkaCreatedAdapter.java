@@ -5,8 +5,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -37,10 +37,9 @@ public class VizitkaCreatedAdapter extends RecyclerView.Adapter<VizitkaCreatedAd
         VizitkaCreated card = vizitkaList.get(position);
         holder.companyName.setText(card.companyName);
         holder.companySpec.setText(card.companySpec);
-        holder.moreButton.setOnClickListener(v -> {
-            // TODO: перейти на экран подробностей
-            Toast.makeText(context, "Открыть " + card.companyName, Toast.LENGTH_SHORT).show();
-        });
+
+        holder.usersCount.setText(String.valueOf(card.users)); // <-- устанавливаем число пользователей
+
         holder.moreButton.setOnClickListener(v -> {
             FragmentActivity activity = (FragmentActivity) context;
             Fragment fragment = EditCardFragment.newInstance(card);
@@ -58,15 +57,17 @@ public class VizitkaCreatedAdapter extends RecyclerView.Adapter<VizitkaCreatedAd
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView companyName, companySpec;
+        TextView companyName, companySpec, usersCount;
+        ImageView iconUsers;
         Button moreButton;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             companyName = itemView.findViewById(R.id.text_company_name);
             companySpec = itemView.findViewById(R.id.text_company_spec);
+            usersCount = itemView.findViewById(R.id.text_users_count); // <-- находим TextView для числа пользователей
+            iconUsers = itemView.findViewById(R.id.icon_users); // <-- находим иконку (если нужно будет работать с ней)
             moreButton = itemView.findViewById(R.id.btn_more);
         }
     }
 }
-

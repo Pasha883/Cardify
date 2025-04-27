@@ -22,12 +22,51 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
-        <TextView
-            android:id="@+id/text_company_spec"
-            android:text="Specialization"
-            android:textSize="14sp"
+        <!-- Горизонтальный контейнер для специализации и пользователей -->
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:layout_marginTop="4dp">
+
+            <TextView
+                android:id="@+id/text_company_spec"
+                android:text="Specialization"
+                android:textSize="14sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <!-- Отступ между специализацией и иконкой -->
+            <Space
+                android:layout_width="12dp"
+                android:layout_height="wrap_content" />
+
+            <!-- Иконка человечка + число -->
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:id="@+id/icon_users"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/ic_users"
+                    android:contentDescription="Users"/>
+
+                <TextView
+                    android:id="@+id/text_users_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textSize="14sp"
+                    android:layout_marginStart="4dp"
+                    android:textColor="#000000"/>
+            </LinearLayout>
+        </LinearLayout>
+
     </LinearLayout>
 
     <Button

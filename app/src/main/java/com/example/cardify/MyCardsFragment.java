@@ -44,7 +44,6 @@ public class MyCardsFragment extends Fragment {
         loadMyCards();
 
         btnCreateCard.setOnClickListener(v -> {
-            // Переключение на экран создания визитки
             requireActivity().getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, new AddCardFragment())
                     .addToBackStack(null)
@@ -72,6 +71,13 @@ public class MyCardsFragment extends Fragment {
                                 public void onDataChange(@NonNull DataSnapshot cardSnapshot) {
                                     VizitkaCreated card = cardSnapshot.getValue(VizitkaCreated.class);
                                     if (card != null) {
+                                        // Попробовать получить поле users
+                                        Long usersCount = cardSnapshot.child("users").getValue(Long.class);
+                                        if (usersCount != null) {
+                                            card.users = usersCount.intValue();
+                                        } else {
+                                            card.users = 0;
+                                        }
                                         myCardsList.add(card);
                                         adapter.notifyDataSetChanged();
                                     }
