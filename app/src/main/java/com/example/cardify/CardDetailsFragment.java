@@ -1,7 +1,9 @@
 package com.example.cardify;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,10 +42,10 @@ public class CardDetailsFragment extends Fragment {
         setField(view, R.id.tv_company_spec, vizitka.companySpec);
         setField(view, R.id.tv_description, vizitka.description);
 
-        setField(view, R.id.container_email, R.id.tv_email, vizitka.email);
-        setField(view, R.id.container_phone, R.id.tv_phone, vizitka.phone);
-        setField(view, R.id.container_site, R.id.tv_site, vizitka.site);
-        setField(view, R.id.container_tg, R.id.tv_tg, vizitka.TG);
+        setClickableField(view, R.id.container_email, R.id.tv_email, vizitka.email, FieldType.EMAIL);
+        setClickableField(view, R.id.container_phone, R.id.tv_phone, vizitka.phone, FieldType.PHONE);
+        setClickableField(view, R.id.container_site, R.id.tv_site, vizitka.site, FieldType.SITE);
+        setClickableField(view, R.id.container_tg, R.id.tv_tg, vizitka.TG, FieldType.TG);
 
         // Кнопка удаления
         Button deleteBtn = view.findViewById(R.id.btn_delete_card);
@@ -55,10 +57,8 @@ public class CardDetailsFragment extends Fragment {
                         String userId = "userID001";
                         String cardId = vizitka.id;
 
-                        // Уменьшаем количество пользователей визитки
                         decrementUserCount(cardId);
 
-                        // Удаляем визитку из сохранённых у пользователя
                         FirebaseDatabase.getInstance()
                                 .getReference("users")
                                 .child(userId)
@@ -86,18 +86,6 @@ public class CardDetailsFragment extends Fragment {
         return view;
     }
 
-    private void setField(View view, int containerId, int textViewId, String value) {
-        LinearLayout container = view.findViewById(containerId);
-        TextView tv = view.findViewById(textViewId);
-
-        if (value == null || value.isEmpty()) {
-            container.setVisibility(View.GONE);
-        } else {
-            container.setVisibility(View.VISIBLE);
-            tv.setText(value);
-        }
-    }
-
     private void setField(View view, int textViewId, String value) {
         TextView tv = view.findViewById(textViewId);
 
@@ -107,6 +95,50 @@ public class CardDetailsFragment extends Fragment {
             tv.setVisibility(View.VISIBLE);
             tv.setText(value);
         }
+    }
+
+    private void setClickableField(View view, int containerId, int textViewId, String value, FieldType type) {
+        LinearLayout container = view.findViewById(containerId);
+        TextView tv = view.findViewById(textViewId);
+
+        if (value == null || value.isEmpty()) {
+            container.setVisibility(View.GONE);
+        } else {
+            container.setVisibility(View.VISIBLE);
+            tv.setText(value);
+
+            container.setOnClickListener(v -> {
+                switch (type) {
+                    case EMAIL:
+                        Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
+                        emailIntent.setData(Uri.parse("mailto:" + value));
+                        startActivity(Intent.createChooser(emailIntent, "Отправить email"));
+                        break;
+                    case PHONE:
+                        Intent phoneIntent = new Intent(Intent.ACTION_DIAL);
+                        phoneIntent.setData(Uri.parse("tel:" + value));
+                        startActivity(phoneIntent);
+                        break;
+                    case SITE:
+                        String url = value.startsWith("http") ? value : "http://" + value;
+                        Intent siteIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                        startActivity(siteIntent);
+                        break;
+                    case TG:
+                        String tgLink = value.startsWith("@") ? "https://t.me/" + value.substring(1) : value;
+                        Intent tgIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(tgLink));
+                        startActivity(tgIntent);
+                        break;
+                }
+            });
+        }
+    }
+
+    private enum FieldType {
+        EMAIL,
+        PHONE,
+        SITE,
+        TG
     }
 
     private void decrementUserCount(String cardId) {
