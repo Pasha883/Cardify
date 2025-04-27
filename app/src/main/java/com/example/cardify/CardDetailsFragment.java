@@ -55,6 +55,10 @@ public class CardDetailsFragment extends Fragment {
                         String userId = "userID001";
                         String cardId = vizitka.id;
 
+                        // Уменьшаем количество пользователей визитки
+                        decrementUserCount(cardId);
+
+                        // Удаляем визитку из сохранённых у пользователя
                         FirebaseDatabase.getInstance()
                                 .getReference("users")
                                 .child(userId)
@@ -78,7 +82,6 @@ public class CardDetailsFragment extends Fragment {
 
             dialog.show();
         });
-
 
         return view;
     }
@@ -104,5 +107,26 @@ public class CardDetailsFragment extends Fragment {
             tv.setVisibility(View.VISIBLE);
             tv.setText(value);
         }
+    }
+
+    private void decrementUserCount(String cardId) {
+        FirebaseDatabase.getInstance()
+                .getReference("vizitcards")
+                .child(cardId)
+                .child("users")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Long currentCount = task.getResult().getValue(Long.class);
+                        if (currentCount != null && currentCount > 0) {
+                            long newCount = currentCount - 1;
+                            FirebaseDatabase.getInstance()
+                                    .getReference("vizitcards")
+                                    .child(cardId)
+                                    .child("users")
+                                    .setValue(newCount);
+                        }
+                    }
+                });
     }
 }

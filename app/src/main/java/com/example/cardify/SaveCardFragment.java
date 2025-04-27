@@ -53,19 +53,53 @@ public class SaveCardFragment extends Fragment {
 
         String cardId = "cardID" + input;
 
-        database.child("vizitcards").child(cardId).get().addOnCompleteListener(task -> {
+        // Сначала проверяем, добавлял ли пользователь уже эту визитку
+        database.child("users").child(userId).child("savedVizitcards").child(cardId)
+                .get().addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        DataSnapshot savedSnapshot = task.getResult();
+                        if (savedSnapshot.exists()) {
+                            // Визитка уже добавлена
+                            Toast.makeText(getContext(), "Визитка уже добавлена", Toast.LENGTH_SHORT).show();
+                        } else {
+                            // Визитка ещё не добавлена, теперь проверяем её существование в общем списке
+                            database.child("vizitcards").child(cardId).get().addOnCompleteListener(cardTask -> {
+                                if (cardTask.isSuccessful()) {
+                                    DataSnapshot cardSnapshot = cardTask.getResult();
+                                    if (cardSnapshot.exists()) {
+                                        // Добавляем визитку пользователю
+                                        database.child("users").child(userId).child("savedVizitcards").child(cardId)
+                                                .setValue("")
+                                                .addOnSuccessListener(aVoid -> {
+                                                    Toast.makeText(getContext(), "Визитка добавлена", Toast.LENGTH_SHORT).show();
+                                                    // Увеличиваем количество пользователей у визитки
+                                                    incrementUserCount(cardId);
+                                                })
+                                                .addOnFailureListener(e -> Toast.makeText(getContext(), "Ошибка сохранения", Toast.LENGTH_SHORT).show());
+                                    } else {
+                                        Toast.makeText(getContext(), "Визитка не найдена", Toast.LENGTH_SHORT).show();
+                                    }
+                                } else {
+                                    Toast.makeText(getContext(), "Ошибка поиска визитки: " + cardTask.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                    } else {
+                        Toast.makeText(getContext(), "Ошибка проверки сохранённых визиток: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    private void incrementUserCount(String cardId) {
+        DatabaseReference userCountRef = database.child("vizitcards").child(cardId).child("users");
+
+        userCountRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                DataSnapshot snapshot = task.getResult();
-                if (snapshot.exists()) {
-                    database.child("users").child(userId).child("savedVizitcards").child(cardId)
-                            .setValue("")
-                            .addOnSuccessListener(aVoid -> Toast.makeText(getContext(), "Визитка добавлена", Toast.LENGTH_SHORT).show())
-                            .addOnFailureListener(e -> Toast.makeText(getContext(), "Ошибка сохранения", Toast.LENGTH_SHORT).show());
-                } else {
-                    Toast.makeText(getContext(), "Визитка не найдена", Toast.LENGTH_SHORT).show();
+                Long currentCount = task.getResult().getValue(Long.class);
+                if (currentCount == null) {
+                    currentCount = 0L;
                 }
-            } else {
-                Toast.makeText(getContext(), "Ошибка поиска: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                userCountRef.setValue(currentCount + 1);
             }
         });
     }
