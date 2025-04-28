@@ -1,19 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
-    <color name="my_primary_color">#FF6200EE</color>
-    <color name="my_primary_dark_color">#FF3700B3</color>
-    <color name="my_secondary_color">#FF03DAC6</color>
-    <color name="my_secondary_dark_color">#FF018786</color>
-    <color name="my_background_color">#F5F5F5</color>
-    <color name="my_button_background">#FF6200EE</color>
 
-    <!-- <color name="my_primary_color">#BB86FC</color> -->
+    <!-- Светлая тема -->
+    <color name="light_background">#F5F5F5</color>
+    <color name="light_card">#FFFFFF</color>
+    <color name="light_text">#000000</color>
+    <color name="light_divider">#E0E0E0</color>
 
-    <!-- <color name="my_secondary_color">#03DAC6</color> -->
+    <!-- Тёмная тема -->
+    <color name="dark_background">#121212</color>
+    <color name="dark_card">#1E1E1E</color>
+    <color name="dark_text">#FFFFFF</color>
+    <color name="dark_divider">#2C2C2C</color>
 
-    <!-- <color name="my_background_color">#121212</color> -->
-
-    <!-- <color name="my_button_background">#BB86FC</color> -->
 </resources>
