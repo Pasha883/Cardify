@@ -1,13 +1,10 @@
 package com.example.cardify;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.FrameLayout;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -27,21 +24,30 @@ public class MainActivity extends AppCompatActivity {
         fragmentContainer = findViewById(R.id.fragment_container);
         bottomNavigationView = findViewById(R.id.bottom_navigation);
 
+        // Смотрим, что передано через Intent
+        boolean openSettings = getIntent().getBooleanExtra("openSettings", false);
 
-        // По умолчанию открываем SavedCardsFragment
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, new SavedCardsFragment())
-                    .commit();
+            if (openSettings) {
+                // Если передано открытие настроек
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, new SettingsFragment())
+                        .commit();
+                bottomNav.setSelectedItemId(R.id.nav_settings);
+            } else {
+                // Иначе по умолчанию SavedCardsFragment
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, new SavedCardsFragment())
+                        .commit();
+                bottomNav.setSelectedItemId(R.id.nav_saved);
+            }
         }
-        bottomNav.setSelectedItemId(R.id.nav_saved); // <--- добавь эту строку
 
         // Автоматическая установка нижнего отступа под BottomNavigationView
         bottomNavigationView.post(() -> {
             int bottomHeight = bottomNavigationView.getHeight();
             fragmentContainer.setPadding(0, 0, 0, bottomHeight);
         });
-
     }
 
     private final BottomNavigationView.OnItemSelectedListener navListener =
@@ -64,6 +70,4 @@ public class MainActivity extends AppCompatActivity {
 
                 return true;
             };
-
-
 }

@@ -1,5 +1,6 @@
 package com.example.cardify;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -90,10 +91,12 @@ public class SettingsFragment extends Fragment {
         } else {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         }
-        // Просто пересоздаём текущий фрагмент
-        FragmentTransaction ft = requireActivity().getSupportFragmentManager().beginTransaction();
-        ft.detach(this).attach(this).commit();
+        Intent intent = new Intent(requireContext(), MainActivity.class);
+        intent.putExtra("openSettings", true); // <-- Ключевой момент
+        startActivity(intent);
+        requireActivity().finish();
     }
+
 
     private void updateThemeIcon() {
         SharedPreferences prefs = requireActivity().getSharedPreferences("settings", getContext().MODE_PRIVATE);
