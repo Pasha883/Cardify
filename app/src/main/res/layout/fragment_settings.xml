@@ -127,6 +127,8 @@
                     android:padding="16dp"
                     android:gravity="center_vertical">
 
+
+
                     <ImageView
                         android:id="@+id/imageThemeIcon"
                         android:layout_width="24dp"
