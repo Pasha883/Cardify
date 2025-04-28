@@ -98,6 +98,7 @@ public class SettingsFragment extends Fragment {
         intent.putExtra("openSettings", true);
         startActivity(intent);
         requireActivity().finish();
+        requireActivity().overridePendingTransition(0, 0);
     }
 
 
