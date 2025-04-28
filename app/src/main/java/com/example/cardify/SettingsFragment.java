@@ -87,15 +87,19 @@ public class SettingsFragment extends Fragment {
 
     private void applyTheme() {
         if (isDarkTheme) {
+            ThemeManager.saveTheme(requireContext(), true);
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         } else {
+            ThemeManager.saveTheme(requireContext(), false);
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         }
+
         Intent intent = new Intent(requireContext(), MainActivity.class);
-        intent.putExtra("openSettings", true); // <-- Ключевой момент
+        intent.putExtra("openSettings", true);
         startActivity(intent);
         requireActivity().finish();
     }
+
 
 
     private void updateThemeIcon() {
