@@ -48,8 +48,9 @@ public class QRCodeDialogFragment extends DialogFragment {
 
         // Генерация QR-кода
         try {
+            String url = "https://cardify.page.link/add?cardId=" + cardId;
             BarcodeEncoder encoder = new BarcodeEncoder();
-            Bitmap qrBitmap = encoder.encodeBitmap(cardId, BarcodeFormat.QR_CODE, 512, 512);
+            Bitmap qrBitmap = encoder.encodeBitmap(url, BarcodeFormat.QR_CODE, 512, 512);
             qrImage.setImageBitmap(qrBitmap);
 
             btnSave.setOnClickListener(v -> {

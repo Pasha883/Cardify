@@ -1,6 +1,7 @@
 package com.example.cardify;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.widget.FrameLayout;
 
@@ -13,50 +14,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 public class MainActivity extends AppCompatActivity {
     private FrameLayout fragmentContainer;
     private BottomNavigationView bottomNavigationView;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        // Ставим тему до загрузки вьюшек
-        if (ThemeManager.isDarkTheme(this)) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-        } else {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        }
-
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
-        bottomNav.setOnItemSelectedListener(navListener);
-
-        fragmentContainer = findViewById(R.id.fragment_container);
-        bottomNavigationView = findViewById(R.id.bottom_navigation);
-
-        // Смотрим, что передано через Intent
-        boolean openSettings = getIntent().getBooleanExtra("openSettings", false);
-
-        if (savedInstanceState == null) {
-            if (openSettings) {
-                // Если передано открытие настроек
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, new SettingsFragment())
-                        .commit();
-                bottomNav.setSelectedItemId(R.id.nav_settings);
-            } else {
-                // Иначе по умолчанию SavedCardsFragment
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, new SavedCardsFragment())
-                        .commit();
-                bottomNav.setSelectedItemId(R.id.nav_saved);
-            }
-        }
-
-        // Автоматическая установка нижнего отступа под BottomNavigationView
-        bottomNavigationView.post(() -> {
-            int bottomHeight = bottomNavigationView.getHeight();
-            fragmentContainer.setPadding(0, 0, 0, bottomHeight);
-        });
-    }
 
     private final BottomNavigationView.OnItemSelectedListener navListener =
             item -> {
@@ -78,4 +35,78 @@ public class MainActivity extends AppCompatActivity {
 
                 return true;
             };
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        // Применяем тему до инициализации UI
+        if (ThemeManager.isDarkTheme(this)) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
+
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        fragmentContainer = findViewById(R.id.fragment_container);
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setOnItemSelectedListener(navListener);
+
+        // Проверка, нужно ли открыть настройки
+        boolean openSettings = getIntent().getBooleanExtra("openSettings", false);
+        Intent intent = getIntent();
+
+        if (savedInstanceState == null) {
+            if (openSettings) {
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, new SettingsFragment())
+                        .commit();
+                bottomNavigationView.setSelectedItemId(R.id.nav_settings);
+            } else if (!(Intent.ACTION_VIEW.equals(intent.getAction()) && intent.getData() != null)){
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, new SavedCardsFragment())
+                        .commit();
+                bottomNavigationView.setSelectedItemId(R.id.nav_saved);
+            }
+        }
+
+        // Обработка deep link
+
+        if (Intent.ACTION_VIEW.equals(intent.getAction()) && intent.getData() != null) {
+            Uri data = intent.getData();
+            String cardId = data.getQueryParameter("cardId");
+            if (cardId != null) {
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, new SaveCardFragment())
+                        .commit();
+                bottomNavigationView.setSelectedItemId(R.id.nav_add);
+
+                // Отключаем обработку выбора нижнего меню, чтобы не перезаписался фрагмент
+                bottomNavigationView.setOnItemSelectedListener(null);
+
+                // Открываем фрагмент подтверждения добавления визитки
+                ConfirmAddCardFragment.newInstance(cardId)
+                        .show(getSupportFragmentManager(), "confirm_dialog");
+
+                // Можно визуально установить выбранный пункт, но обработка при этом выключена
+                bottomNavigationView.setSelectedItemId(R.id.nav_add);
+
+                // Возвращаем слушатель обратно
+                bottomNavigationView.setOnItemSelectedListener(navListener);
+
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, new SavedCardsFragment())
+                        .commit();
+
+                setIntent(new Intent(getIntent()).setAction(null).setData(null));
+                bottomNavigationView.setSelectedItemId(R.id.nav_add);
+            }
+        }
+
+        // Устанавливаем нижний отступ под BottomNavigationView
+        bottomNavigationView.post(() -> {
+            int bottomHeight = bottomNavigationView.getHeight();
+            fragmentContainer.setPadding(0, 0, 0, bottomHeight);
+        });
+    }
 }
