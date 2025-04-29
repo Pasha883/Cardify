@@ -22,7 +22,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
-        <!-- Горизонтальный контейнер для специализации и пользователей -->
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="wrap_content"
@@ -37,12 +36,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
-            <!-- Отступ между специализацией и иконкой -->
             <Space
                 android:layout_width="12dp"
                 android:layout_height="wrap_content" />
 
-            <!-- Иконка человечка + число -->
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="wrap_content"
@@ -54,7 +51,7 @@
                     android:layout_width="18dp"
                     android:layout_height="18dp"
                     android:src="@drawable/ic_users"
-                    android:contentDescription="Users"/>
+                    android:contentDescription="Users" />
 
                 <TextView
                     android:id="@+id/text_users_count"
@@ -63,15 +60,28 @@
                     android:text="0"
                     android:textSize="14sp"
                     android:layout_marginStart="4dp"
-                    android:textColor="#000000"/>
+                    android:textColor="#000000" />
             </LinearLayout>
         </LinearLayout>
 
     </LinearLayout>
 
+    <!-- Кнопка редактирования -->
     <Button
         android:id="@+id/btn_more"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Редактировать"/>
+        android:text="Редактировать"
+        android:layout_gravity="center_vertical" />
+
+    <!-- Кнопка для открытия меню "поделиться" -->
+    <ImageButton
+        android:id="@+id/btn_share"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/ic_share"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
+        android:contentDescription="Share"
+        android:layout_gravity="center_vertical"
+         />
 </LinearLayout>
