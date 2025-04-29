@@ -10,6 +10,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
@@ -54,7 +56,7 @@ public class QRCodeDialogFragment extends DialogFragment {
             qrImage.setImageBitmap(qrBitmap);
 
             btnSave.setOnClickListener(v -> {
-                saveImage(qrBitmap, cardId);
+                saveImage(qrBitmap, companyName.replaceAll("[^a-zA-Z0-9_-]", "_"));
             });
 
         } catch (WriterException e) {
@@ -69,16 +71,23 @@ public class QRCodeDialogFragment extends DialogFragment {
 
     private void saveImage(Bitmap bitmap, String filename) {
         try {
-            File dir = new File(requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES), "CardifyQR");
-            if (!dir.exists()) dir.mkdirs();
+            File downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+            if (!downloadsDir.exists()) downloadsDir.mkdirs();
 
-            File file = new File(dir, filename + ".png");
+
+            File file = new File(downloadsDir, filename + ".png");
             FileOutputStream out = new FileOutputStream(file);
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
             out.flush();
             out.close();
+
+            //Toast.makeText(getContext(), "QR-код сохранён в загрузки", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Сохранено: " + file.getAbsolutePath(), Toast.LENGTH_LONG).show();
+            dismiss();
         } catch (Exception e) {
             e.printStackTrace();
+            Toast.makeText(getContext(), "Ошибка при сохранении", Toast.LENGTH_SHORT).show();
         }
     }
+
 }
