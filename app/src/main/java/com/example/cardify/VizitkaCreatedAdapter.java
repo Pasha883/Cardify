@@ -61,7 +61,10 @@ public class VizitkaCreatedAdapter extends RecyclerView.Adapter<VizitkaCreatedAd
                 switch (item.getTitle().toString()) {
                     case "Поделиться через QR":
                         Toast.makeText(context, "Поделиться через QR", Toast.LENGTH_SHORT).show();
-                        // TODO: Реализация генерации QR-кода
+                        FragmentActivity activity = (FragmentActivity) context;
+                        QRCodeDialogFragment dialog = QRCodeDialogFragment.newInstance(
+                                card.id, card.companyName);
+                        dialog.show(activity.getSupportFragmentManager(), "qr_dialog");
                         return true;
                     case "Поделиться через NFC":
                         Toast.makeText(context, "Поделиться через NFC", Toast.LENGTH_SHORT).show();
