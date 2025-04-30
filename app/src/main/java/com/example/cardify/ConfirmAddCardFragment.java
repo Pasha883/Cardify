@@ -157,11 +157,13 @@ public class ConfirmAddCardFragment extends DialogFragment {
                                     }
                                 } else {
                                     Toast.makeText(getContext(), "Ошибка поиска визитки: " + cardTask.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                    dismiss();
                                 }
                             });
                         }
                     } else {
                         Toast.makeText(getContext(), "Ошибка проверки сохранённых визиток: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        dismiss();
                     }
                 });
         requireActivity().getSupportFragmentManager().beginTransaction()

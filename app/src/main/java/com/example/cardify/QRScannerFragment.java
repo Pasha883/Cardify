@@ -42,6 +42,9 @@ public class QRScannerFragment extends Fragment {
                     // Переход к фрагменту подтверждения
                     ConfirmAddCardFragment.newInstance(cardId)
                             .show(requireActivity().getSupportFragmentManager(), "confirm_dialog");
+                    requireActivity().getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.fragment_container, new SaveCardFragment()) // или другой нужный фрагмент
+                            .commit();
 
                 }
             }
