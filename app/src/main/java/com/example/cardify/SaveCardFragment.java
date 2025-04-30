@@ -22,6 +22,7 @@ public class SaveCardFragment extends Fragment {
 
     private EditText editCardNumber;
     private Button btnAddCard;
+    private Button btnScanQr;
 
     private DatabaseReference database;
     private String userId;
@@ -34,11 +35,21 @@ public class SaveCardFragment extends Fragment {
 
         editCardNumber = view.findViewById(R.id.edit_card_number);
         btnAddCard = view.findViewById(R.id.btn_add_card);
+        btnScanQr = view.findViewById(R.id.btn_scan_qr);
 
         database = FirebaseDatabase.getInstance().getReference();
         userId = "userID001";
 
         btnAddCard.setOnClickListener(v -> tryAddCard());
+
+        btnScanQr.setOnClickListener(v -> {
+            QRScannerFragment qrScannerFragment = new QRScannerFragment();
+            requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, qrScannerFragment)
+                    .addToBackStack(null)
+                    .commit();
+        });
 
         return view;
     }

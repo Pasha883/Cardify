@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -83,6 +84,7 @@ public class QRCodeDialogFragment extends DialogFragment {
 
             //Toast.makeText(getContext(), "QR-код сохранён в загрузки", Toast.LENGTH_SHORT).show();
             Toast.makeText(getContext(), "Сохранено: " + file.getAbsolutePath(), Toast.LENGTH_LONG).show();
+            Log.d("QR Code", "QR-код сохранён в загрузки: " + file.getAbsolutePath());
             dismiss();
         } catch (Exception e) {
             e.printStackTrace();

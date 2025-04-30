@@ -45,4 +45,5 @@ dependencies {
     implementation(libs.core)
     implementation(libs.zxing.android.embedded)
 
+
 }

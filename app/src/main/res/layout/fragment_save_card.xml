@@ -22,4 +22,14 @@
         android:text="Добавить визитку"
         android:drawableLeft="@drawable/ic_add"
         android:layout_marginTop="16dp" />
+
+    <Button
+        android:id="@+id/btn_scan_qr"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Сканировать QR-код"
+        android:drawableLeft="@drawable/ic_qr_scan"
+        android:layout_marginTop="12dp" />
+
+
 </LinearLayout>
