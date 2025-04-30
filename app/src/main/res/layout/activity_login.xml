@@ -6,6 +6,20 @@
     android:gravity="center"
     android:padding="24dp">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/palanquin_dark_bold"
+        android:gravity="center"
+        android:text="CardifyID"
+        android:textSize="47sp" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="96dp" />
+
     <EditText
         android:id="@+id/email"
         android:layout_width="match_parent"
