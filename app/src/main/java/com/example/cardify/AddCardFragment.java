@@ -13,6 +13,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -27,7 +29,7 @@ public class AddCardFragment extends Fragment {
     private EditText etCompanyName, etCompanySpec, etDescription, etEmail, etPhone, etSite, etTG;
     private MaterialButton btnSave;
     private DatabaseReference cardsRef, userRef;
-    private final String userId = "userID001";
+    private  String userId = "";
 
     @Nullable
     @Override
@@ -43,8 +45,15 @@ public class AddCardFragment extends Fragment {
         etTG = view.findViewById(R.id.et_telegram);
         btnSave = view.findViewById(R.id.btn_save_changes);
 
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            userId = currentUser.getUid();
+        }
+
         cardsRef = FirebaseDatabase.getInstance().getReference("vizitcards");
         userRef = FirebaseDatabase.getInstance().getReference("users").child(userId);
+
+
 
         btnSave.setOnClickListener(v -> createNewCard());
 

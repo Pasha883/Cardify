@@ -18,6 +18,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -68,7 +70,11 @@ public class ConfirmAddCardFragment extends DialogFragment {
         });
 
         database = FirebaseDatabase.getInstance().getReference();
-        userId = "userID001";
+        userId = "";
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            userId = currentUser.getUid();
+        }
 
         return view;
     }
@@ -147,6 +153,7 @@ public class ConfirmAddCardFragment extends DialogFragment {
 
                                     } else {
                                         Toast.makeText(getContext(), "Визитка не найдена", Toast.LENGTH_SHORT).show();
+                                        dismiss();
                                     }
                                 } else {
                                     Toast.makeText(getContext(), "Ошибка поиска визитки: " + cardTask.getException().getMessage(), Toast.LENGTH_SHORT).show();

@@ -12,6 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -28,7 +30,7 @@ public class SavedCardsFragment extends Fragment {
     private List<Vizitka> vizitkaList;
 
     private DatabaseReference vizitRef;
-    private final String userId = "userID001"; // Вынес отдельно
+    private String userId = "";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -43,6 +45,10 @@ public class SavedCardsFragment extends Fragment {
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         vizitRef = database.getReference("vizitcards");
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            userId = currentUser.getUid();
+        }
 
         loadVizitki();
 

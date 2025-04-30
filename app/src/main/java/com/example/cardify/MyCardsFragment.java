@@ -13,6 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -54,7 +56,11 @@ public class MyCardsFragment extends Fragment {
     }
 
     private void loadMyCards() {
-        String userId = "userID001";
+        String userId = "";
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            userId = currentUser.getUid();
+        }
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("users")
                 .child(userId).child("createdVizitcards");
 

@@ -15,6 +15,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -63,7 +65,11 @@ public class EditCardFragment extends Fragment {
                     .setTitle("Удалить визитку?")
                     .setMessage("Вы уверены? Это действие необратимо.")
                     .setPositiveButton("Да", (dialogInterface, which) -> {
-                        String userId = "userID001";
+                        String userId = "";
+                        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+                        if (currentUser != null) {
+                            userId = currentUser.getUid();
+                        }
                         String cardId = card.id;
 
                         DatabaseReference db = FirebaseDatabase.getInstance().getReference();
