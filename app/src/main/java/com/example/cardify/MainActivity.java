@@ -11,6 +11,10 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
+
 public class MainActivity extends AppCompatActivity {
     private FrameLayout fragmentContainer;
     private BottomNavigationView bottomNavigationView;
@@ -38,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         // Применяем тему до инициализации UI
         if (ThemeManager.isDarkTheme(this)) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
@@ -46,6 +51,12 @@ public class MainActivity extends AppCompatActivity {
         }
 
         super.onCreate(savedInstanceState);
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser == null) {
+            startActivity(new Intent(this, RegisterActivity.class));
+            finish(); // Закрываем MainActivity, чтобы пользователь не мог вернуться назад
+            return;
+        }
         setContentView(R.layout.activity_main);
 
         fragmentContainer = findViewById(R.id.fragment_container);
