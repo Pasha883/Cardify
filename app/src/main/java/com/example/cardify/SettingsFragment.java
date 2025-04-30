@@ -30,10 +30,12 @@ public class SettingsFragment extends Fragment {
     private LinearLayout layoutAbout;
     private LinearLayout layoutTheme;
     private ImageView imageThemeIcon;
+    LinearLayout logoutLayout;
 
     private DatabaseReference databaseReference;
 
     private boolean isDarkTheme;
+    private FirebaseAuth mAuth;
 
     @Nullable
     @Override
@@ -44,12 +46,14 @@ public class SettingsFragment extends Fragment {
         layoutAbout = view.findViewById(R.id.layoutAbout);
         layoutTheme = view.findViewById(R.id.layoutTheme);
         imageThemeIcon = view.findViewById(R.id.imageThemeIcon);
+        logoutLayout = view.findViewById(R.id.layoutLogout);
 
         databaseReference = FirebaseDatabase.getInstance().getReference("users");
 
         loadUserProfile();
         setupAboutClickListener();
         setupThemeClickListener();
+        setupLogoutClickListener();
 
         updateThemeIcon();
 
@@ -88,6 +92,35 @@ public class SettingsFragment extends Fragment {
             isDarkTheme = !isDarkTheme;
             saveThemePreference(isDarkTheme);
             applyTheme();
+        });
+    }
+
+    private void setupLogoutClickListener() {
+        // Инициализируем Firebase Auth
+        mAuth = FirebaseAuth.getInstance();
+
+        // Находим LinearLayout для выхода
+
+
+        // Устанавливаем обработчик нажатия
+        logoutLayout.setOnClickListener(v -> {
+            // Выходим из Firebase Authentication
+            mAuth.signOut();
+
+            // Создаем Intent для перезапуска MainActivity
+            // Замените MainActivity.class на вашу главную активность, если она называется иначе
+            Intent intent = new Intent(requireActivity(), MainActivity.class);
+
+            // Устанавливаем флаги для очистки стека активностей и запуска новой задачи
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+            // Запускаем MainActivity
+            startActivity(intent);
+
+            // Закрываем текущую активность (содержащую этот фрагмент)
+            if (getActivity() != null) {
+                getActivity().finish();
+            }
         });
     }
 
