@@ -62,9 +62,9 @@ public class ConfirmAddCardFragment extends DialogFragment {
         btnSave.setOnClickListener(v -> saveCard(cardId));
         btnCancel.setOnClickListener(v -> {
             dismiss();
-            /*requireActivity().getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, new SavedCardsFragment()) // или другой нужный фрагмент
-                    .commit();*/
+            requireActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, new SaveCardFragment()) // или другой нужный фрагмент
+                    .commit();
         });
 
         database = FirebaseDatabase.getInstance().getReference();
@@ -157,6 +157,9 @@ public class ConfirmAddCardFragment extends DialogFragment {
                         Toast.makeText(getContext(), "Ошибка проверки сохранённых визиток: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
+        requireActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, new SaveCardFragment()) // или другой нужный фрагмент
+                .commit();
     }
 
     private void incrementUserCount(String cardId) {

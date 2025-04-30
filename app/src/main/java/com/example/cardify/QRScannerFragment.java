@@ -3,6 +3,7 @@ package com.example.cardify;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.app.FragmentManager;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -39,12 +40,9 @@ public class QRScannerFragment extends Fragment {
 
                 if (cardId != null) {
                     // Переход к фрагменту подтверждения
-                    ConfirmAddCardFragment fragment = ConfirmAddCardFragment.newInstance(cardId);
-                    requireActivity().getSupportFragmentManager()
-                            .beginTransaction()
-                            .replace(R.id.fragment_container, fragment)
-                            .addToBackStack(null)
-                            .commit();
+                    ConfirmAddCardFragment.newInstance(cardId)
+                            .show(requireActivity().getSupportFragmentManager(), "confirm_dialog");
+
                 }
             }
         }

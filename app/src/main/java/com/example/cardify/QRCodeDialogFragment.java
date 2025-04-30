@@ -70,25 +70,33 @@ public class QRCodeDialogFragment extends DialogFragment {
         return dialog;
     }
 
-    private void saveImage(Bitmap bitmap, String filename) {
+    private void saveImage(Bitmap bitmap, String baseName) {
         try {
-            File downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-            if (!downloadsDir.exists()) downloadsDir.mkdirs();
+            File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+            if (!dir.exists()) dir.mkdirs();
 
+            // Генерируем уникальное имя файла
+            String fileName = baseName + ".png";
+            File file = new File(dir, fileName);
+            int count = 1;
+            while (file.exists()) {
+                fileName = baseName + "(" + count + ").png";
+                file = new File(dir, fileName);
+                count++;
+            }
 
-            File file = new File(downloadsDir, filename + ".png");
+            // Сохраняем файл
             FileOutputStream out = new FileOutputStream(file);
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
             out.flush();
             out.close();
 
-            //Toast.makeText(getContext(), "QR-код сохранён в загрузки", Toast.LENGTH_SHORT).show();
+
             Toast.makeText(getContext(), "Сохранено: " + file.getAbsolutePath(), Toast.LENGTH_LONG).show();
-            Log.d("QR Code", "QR-код сохранён в загрузки: " + file.getAbsolutePath());
-            dismiss();
+
         } catch (Exception e) {
             e.printStackTrace();
-            Toast.makeText(getContext(), "Ошибка при сохранении", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Ошибка сохранения", Toast.LENGTH_SHORT).show();
         }
     }
 
