@@ -78,7 +78,8 @@ public class RegisterActivity extends AppCompatActivity {
                             userData.put("id", uid);
                             userData.put("e-mail", email);
                             userData.put("paswd", password); // Лучше не хранить так, а использовать только Firebase Auth
-                            userData.put("name", ""); // Можно потом заполнить
+                            String randomName = generateRandomName();
+                            userData.put("name", randomName);
                             userData.put("createdVizitcards", new HashMap<>());
                             userData.put("savedVizitcards", new HashMap<>());
 
@@ -97,4 +98,25 @@ public class RegisterActivity extends AppCompatActivity {
                     });
         });
     }
+
+    private String generateRandomName() {
+        String[] adjectives = {
+                "Sunny", "Mighty", "Happy", "Clever", "Bright", "Lucky", "Brave", "Quiet", "Fast", "Cool",
+                "Gentle", "Fierce", "Bold", "Silent", "Swift", "Loyal", "Witty", "Shiny", "Jolly", "Nimble",
+                "Silly", "Glorious", "Sneaky", "Charming", "Feisty", "Daring", "Graceful", "Wild", "Kind", "Curious"
+        };
+
+        String[] nouns = {
+                "Fox", "Tiger", "Pine", "River", "Wolf", "Eagle", "Bear", "Falcon", "Hawk", "Cloud",
+                "Star", "Storm", "Shadow", "Leaf", "Blossom", "Rock", "Flame", "Rain", "Wind", "Stone",
+                "Moon", "Sun", "Hill", "Snow", "Sky", "Tree", "Lion", "Otter", "Panther", "Whale"
+        };
+
+        int adjIndex = (int) (Math.random() * adjectives.length);
+        int nounIndex = (int) (Math.random() * nouns.length);
+
+        return adjectives[adjIndex] + nouns[nounIndex] + (int)(Math.random() * 1000);
+
+    }
+
 }
