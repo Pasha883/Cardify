@@ -1,26 +1,32 @@
 package com.example.cardify;
 
 import static android.app.Activity.RESULT_OK;
+import static android.content.ContentValues.TAG;
+import static java.security.AccessController.getContext;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatDelegate;
-import androidx.fragment.app.Fragment;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -28,7 +34,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
@@ -37,6 +42,7 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.time.Instant;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -46,69 +52,111 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class SettingsFragment extends Fragment {
-    private static final String TAG = "SettingsFragment";
+public class InfoDialogFragment extends DialogFragment {
 
-    private TextView textProfileName;
-    private LinearLayout layoutAbout;
-    private LinearLayout layoutTheme;
-    private ImageView imageThemeIcon;
-    private LinearLayout logoutLayout;
-    private ImageView imageProfile;
-    View profileSection;
+    public interface OnDialogCloseListener {
+        void onUserInfoDialogClosed();
+    }
 
+    private OnDialogCloseListener listener;
+
+    public void setOnDialogCloseListener(OnDialogCloseListener listener) {
+        this.listener = listener;
+    }
+
+    @Override
+    public void onDismiss(@NonNull DialogInterface dialog) {
+        super.onDismiss(dialog);
+        if (listener != null) {
+            listener.onUserInfoDialogClosed();
+        }
+    }
+
+    private TextView userNameTextView, emailTextView, createdCountTextView, savedCountTextView;
+    private ImageView avatarImageView, editIcon;
+    private Button deleteAccountButton;
     private DatabaseReference databaseReference;
-    private boolean isDarkTheme;
-    private FirebaseAuth mAuth;
     private static final int PICK_IMAGE_REQUEST = 1;
     private Uri imageUri;
 
     // Замените на ваш собственный API ключ ImgBB
     private static final String IMGBB_API_KEY = "8c60ccf329b617800e1928f60d7c0382";
 
+    @NonNull
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        Log.d(TAG, "onCreateView: fragment created");
+    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.fragment_info_dialog, null);
 
-        View view = inflater.inflate(R.layout.fragment_settings, container, false);
-
-        textProfileName = view.findViewById(R.id.textProfileName);
-        layoutAbout = view.findViewById(R.id.layoutAbout);
-        layoutTheme = view.findViewById(R.id.layoutTheme);
-        imageThemeIcon = view.findViewById(R.id.imageThemeIcon);
-        logoutLayout = view.findViewById(R.id.layoutLogout);
-        imageProfile = view.findViewById(R.id.imageProfile);
-        profileSection = view.findViewById(R.id.profileHeader); // верхняя часть с аватаркой и именем
+        userNameTextView = view.findViewById(R.id.userNameTextView);
+        emailTextView = view.findViewById(R.id.emailTextView);
+        createdCountTextView = view.findViewById(R.id.createdCountTextView);
+        savedCountTextView = view.findViewById(R.id.savedCountTextView);
+        avatarImageView = view.findViewById(R.id.avatarImageView);
+        editIcon = view.findViewById(R.id.editIcon);
+        deleteAccountButton = view.findViewById(R.id.deleteAccountButton);
 
         databaseReference = FirebaseDatabase.getInstance().getReference("users");
 
-        loadUserProfile();
-        setupAboutClickListener();
-        setupThemeClickListener();
-        setupLogoutClickListener();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            userNameTextView.setText(user.getDisplayName());
+            emailTextView.setText(user.getEmail());
 
-        //Вызов функции открытия файла
-//        imageProfile.setOnClickListener(v -> {
-//            Log.d(TAG, "Profile image clicked");
-//            openFileChooser();
-//        });
+            loadUserProfile();
 
-        profileSection.setOnClickListener(v -> {
-            InfoDialogFragment dialog = new InfoDialogFragment();
-            dialog.setOnDialogCloseListener(() -> {
-                // Это будет вызвано, когда диалог закроется
-                Log.d("SettingsFragment", "InfoDialogFragment был закрыт");
-                // Здесь можешь обновить UI, например, заново загрузить имя/аватар/визитки
-                loadUserProfile();
-            });
-            dialog.show(getParentFragmentManager(), "UserInfoDialog");
+            // Получаем данные о визитках
+            FirebaseDatabase.getInstance().getReference("users")
+                    .child(user.getUid())
+                    .get().addOnSuccessListener(snapshot -> {
+                        long createdCount = snapshot.child("createdVizitcards").getChildrenCount();
+                        long savedCount = snapshot.child("savedVizitcards").getChildrenCount();
+                        createdCountTextView.setText("Создано визиток: " + createdCount);
+                        savedCountTextView.setText("Сохранено визиток: " + savedCount);
+                    });
+        }
+
+        editIcon.setOnClickListener(v -> {
+            new EditDialogFragment().show(getParentFragmentManager(), "edit_dialog");
         });
 
+        deleteAccountButton.setOnClickListener(v -> {
+            new AlertDialog.Builder(requireContext())
+                    .setTitle("Удалить аккаунт")
+                    .setMessage("Вы уверены, что хотите удалить аккаунт и все визитки?")
+                    .setPositiveButton("Да", (dialog, which) -> deleteAccountAndData())
+                    .setNegativeButton("Отмена", null)
+                    .show();
+        });
 
-        updateThemeIcon();
+        avatarImageView.setOnClickListener(v -> {
+            openFileChooser();
+        });
 
-        return view;
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
+        builder.setView(view);
+        return builder.create();
+    }
+
+    private void deleteAccountAndData() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) return;
+        //TODO: Добавить удаление всех созданных визиток
+        String uid = user.getUid();
+
+        // Удаляем данные из базы
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(uid);
+        userRef.removeValue();
+
+        // Удаляем аккаунт
+        user.delete().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Toast.makeText(getContext(), "Аккаунт удалён", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(getContext(), LoginActivity.class));
+                requireActivity().finish();
+            } else {
+                Toast.makeText(getContext(), "Ошибка удаления аккаунта", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void loadUserProfile() {
@@ -119,13 +167,14 @@ public class SettingsFragment extends Fragment {
         }
 
         String userId = currentUser.getUid();
-        databaseReference.child(userId).child("name")
+        FirebaseDatabase.getInstance().getReference("users")
+                .child(userId).child("name")
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         String name = snapshot.getValue(String.class);
                         if (name != null) {
-                            textProfileName.setText(name);
+                            userNameTextView.setText(name);
                         }
                     }
 
@@ -135,7 +184,8 @@ public class SettingsFragment extends Fragment {
                     }
                 });
 
-        databaseReference.child(userId).child("avatar")
+        FirebaseDatabase.getInstance().getReference("users")
+                .child(userId).child("avatar")
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -145,7 +195,7 @@ public class SettingsFragment extends Fragment {
                                     .load(avatarUrl)
                                     .placeholder(R.drawable.ic_profile_placeholder)
                                     .error(R.drawable.ic_profile_placeholder)
-                                    .into(imageProfile);
+                                    .into(avatarImageView);
                         }
                     }
 
@@ -154,90 +204,6 @@ public class SettingsFragment extends Fragment {
                         Log.e(TAG, "loadUserProfile: onCancelled - " + error.getMessage());
                     }
                 });
-    }
-
-    private void setupAboutClickListener() {
-        layoutAbout.setOnClickListener(v -> showAboutDialog());
-    }
-
-    private void setupThemeClickListener() {
-        layoutTheme.setOnClickListener(v -> {
-            isDarkTheme = !isDarkTheme;
-            saveThemePreference(isDarkTheme);
-            applyTheme();
-        });
-    }
-
-    private void setupLogoutClickListener() {
-        mAuth = FirebaseAuth.getInstance();
-        logoutLayout.setOnClickListener(v -> {
-            mAuth.signOut();
-            Intent intent = new Intent(requireActivity(), MainActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-            if (getActivity() != null) {
-                getActivity().finish();
-            }
-        });
-    }
-
-    private void applyTheme() {
-        if (isDarkTheme) {
-            ThemeManager.saveTheme(requireContext(), true);
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-        } else {
-            ThemeManager.saveTheme(requireContext(), false);
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        }
-
-        Intent intent = new Intent(requireContext(), MainActivity.class);
-        intent.putExtra("openSettings", true);
-        startActivity(intent);
-        requireActivity().finish();
-        requireActivity().overridePendingTransition(0, 0);
-    }
-
-    private void updateThemeIcon() {
-        SharedPreferences prefs = requireActivity()
-                .getSharedPreferences("settings", getContext().MODE_PRIVATE);
-        isDarkTheme = prefs.getBoolean("dark_theme", false);
-
-        if (isDarkTheme) {
-            imageThemeIcon.setImageResource(R.drawable.ic_sun);
-        } else {
-            imageThemeIcon.setImageResource(R.drawable.ic_moon);
-        }
-    }
-
-    private void saveThemePreference(boolean darkTheme) {
-        SharedPreferences.Editor editor = requireActivity()
-                .getSharedPreferences("settings", getContext().MODE_PRIVATE)
-                .edit();
-        editor.putBoolean("dark_theme", darkTheme);
-        editor.apply();
-    }
-
-    private void showAboutDialog() {
-        String versionName = "1.0";
-        try {
-            versionName = requireContext()
-                    .getPackageManager()
-                    .getPackageInfo(requireContext().getPackageName(), 0)
-                    .versionName;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        String message = "Название: Cardify\n"
-                + "Версия: " + versionName + "\n"
-                + "PashaCO 2016–2025\n"
-                + "Все права защищены.";
-
-        new androidx.appcompat.app.AlertDialog.Builder(requireContext())
-                .setTitle("О приложении")
-                .setMessage(message)
-                .setPositiveButton("OK", null)
-                .show();
     }
 
     private void openFileChooser() {
@@ -341,7 +307,7 @@ public class SettingsFragment extends Fragment {
                     .load(imageUrl)
                     .placeholder(R.drawable.ic_profile_placeholder)
                     .error(R.drawable.ic_profile_placeholder)
-                    .into(imageProfile);
+                    .into(avatarImageView);
         });
     }
 }
