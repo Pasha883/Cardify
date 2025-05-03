@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/scrollViewSettings"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -26,14 +27,14 @@
                 android:orientation="horizontal"
                 android:padding="16dp">
 
-                <ImageView
+                <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/imageProfile"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
                     android:layout_marginEnd="16dp"
                     android:src="@drawable/ic_profile_placeholder"
                     android:scaleType="centerCrop"
-                    android:background="@drawable/item_background"/>
+                    app:shapeAppearanceOverlay="@style/RoundedImageView"/>
 
                 <TextView
                     android:id="@+id/textProfileName"
