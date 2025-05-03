@@ -116,7 +116,15 @@ public class InfoDialogFragment extends DialogFragment {
         }
 
         editIcon.setOnClickListener(v -> {
-            new EditDialogFragment().show(getParentFragmentManager(), "edit_dialog");
+            //new EditDialogFragment().show(getParentFragmentManager(), "edit_dialog");
+            EditDialogFragment dialog = new EditDialogFragment();
+            dialog.setOnDialogCloseListener(() -> {
+                // Это будет вызвано, когда диалог закроется
+                Log.d("InfoDialogFragment", "EditDialogFragment был закрыт");
+                // Здесь можешь обновить UI, например, заново загрузить имя/аватар/визитки
+                loadUserProfile();
+            });
+            dialog.show(getParentFragmentManager(), "UserInfoDialog");
         });
 
         deleteAccountButton.setOnClickListener(v -> {

@@ -4,6 +4,8 @@ import static android.content.ContentValues.TAG;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -37,6 +39,24 @@ public class EditDialogFragment extends DialogFragment {
     private Button saveButton;
     private String userId;
     private String userName;
+
+    public interface OnDialogCloseListener {
+        void onUserInfoDialogClosed();
+    }
+
+    private InfoDialogFragment.OnDialogCloseListener listener;
+
+    public void setOnDialogCloseListener(InfoDialogFragment.OnDialogCloseListener listener) {
+        this.listener = listener;
+    }
+
+    @Override
+    public void onDismiss(@NonNull DialogInterface dialog) {
+        super.onDismiss(dialog);
+        if (listener != null) {
+            listener.onUserInfoDialogClosed();
+        }
+    }
 
     @NonNull
     @Override
@@ -98,24 +118,40 @@ public class EditDialogFragment extends DialogFragment {
             currentUser.reauthenticate(credential).addOnSuccessListener(authResult -> {
                 // Обновление email
                 if (!TextUtils.isEmpty(newEmail) && !newEmail.equals(currentEmail)) {
-                    currentUser.verifyBeforeUpdateEmail(newEmail)
-                            .addOnSuccessListener(aVoid -> {
-                                Log.d(TAG, "Письмо для подтверждения email отправлено");
-                                Toast.makeText(getContext(), "Подтвердите новую почту через письмо", Toast.LENGTH_LONG).show();
-                                userRef.child(userId).child("e-mail").setValue(newEmail)
-                                        .addOnSuccessListener(aaVoid -> {
-                                            Log.d(TAG, "Email обновлён");
-                                            Toast.makeText(getContext(), "Email обновлён", Toast.LENGTH_SHORT).show();
-                                        })
-                                        .addOnFailureListener(e -> {
-                                            Log.e(TAG, "Ошибка при обновлении email: " + e.getMessage());
-                                            Toast.makeText(getContext(), "Ошибка email: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                                        });
+                    new AlertDialog.Builder(requireContext())
+                            .setTitle("Изменить почту")
+                            .setMessage("Вы уверены, что хотите изменить  почту? Это сбросит вашу текщую сессию!")
+                            .setPositiveButton("Да", (dialog, which) ->
+                                    currentUser.verifyBeforeUpdateEmail(newEmail)
+                                            .addOnSuccessListener(aVoid -> {
+                                                Log.d(TAG, "Письмо для подтверждения email отправлено");
+                                                Toast.makeText(getContext(), "Подтвердите новую почту через письмо", Toast.LENGTH_LONG).show();
+                                                userRef.child(userId).child("e-mail").setValue(newEmail)
+                                                        .addOnSuccessListener(aaVoid -> {
+                                                            Log.d(TAG, "Email обновлён");
+                                                            Toast.makeText(getContext(), "Email обновлён", Toast.LENGTH_SHORT).show();
+                                                            FirebaseAuth mAuth = FirebaseAuth.getInstance();
+                                                            mAuth.signOut();
+                                                            Intent intent = new Intent(requireActivity(), MainActivity.class);
+                                                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                                            startActivity(intent);
+                                                            if (getActivity() != null) {
+                                                                getActivity().finish();
+                                                            }
+                                                        })
+                                                        .addOnFailureListener(e -> {
+                                                            Log.e(TAG, "Ошибка при обновлении email: " + e.getMessage());
+                                                            Toast.makeText(getContext(), "Ошибка email: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                                                        });
+                                            })
+                                            .addOnFailureListener(e -> {
+                                                Log.e(TAG, "Ошибка при обновлении email: " + e.getMessage());
+                                                Toast.makeText(getContext(), "Ошибка email: " + e.getMessage(), Toast.LENGTH_LONG).show();
                             })
-                            .addOnFailureListener(e -> {
-                                Log.e(TAG, "Ошибка при обновлении email: " + e.getMessage());
-                                Toast.makeText(getContext(), "Ошибка email: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                            });
+                            )
+                            .setNegativeButton("Отмена", null)
+                            .show();
+
                 }
 
                 // Обновление пароля
@@ -167,6 +203,7 @@ public class EditDialogFragment extends DialogFragment {
                 Log.e(TAG, "Ошибка повторной аутентификации: " + e.getMessage());
                 Toast.makeText(getContext(), "Неверный текущий пароль: " + e.getMessage(), Toast.LENGTH_LONG).show();
             });
+
         });
 
 
