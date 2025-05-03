@@ -1,5 +1,7 @@
 package com.example.cardify;
 
+import static android.content.ContentValues.TAG;
+
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.os.Bundle;
@@ -10,6 +12,7 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,14 +20,23 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class EditDialogFragment extends DialogFragment {
 
-    private EditText nameEditText, emailEditText, passwordEditText;
+    private EditText nameEditText, emailEditText, passwordEditText, currentPasswordEditText;
     private Button saveButton;
+    private String userId;
+    private String userName;
 
     @NonNull
     @Override
@@ -35,10 +47,31 @@ public class EditDialogFragment extends DialogFragment {
         emailEditText = view.findViewById(R.id.emailEditText);
         passwordEditText = view.findViewById(R.id.passwordEditText);
         saveButton = view.findViewById(R.id.saveButton);
+        currentPasswordEditText = view.findViewById(R.id.currentPasswordEditText);
+
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        userId = user.getUid();
+
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users");
         if (user != null) {
-            nameEditText.setText(user.getDisplayName());
+            userRef.child(userId).child("name")
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            String name = snapshot.getValue(String.class);
+                            if (name != null) {
+                                nameEditText.setText(name);
+                                userName = name;
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                            Log.e(TAG, "loadUserProfile: onCancelled - " + error.getMessage());
+                        }
+                    });
             emailEditText.setText(user.getEmail());
         }
 
@@ -50,27 +83,93 @@ public class EditDialogFragment extends DialogFragment {
             FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
             if (currentUser == null) return;
 
-            if (!newEmail.equals(currentUser.getEmail())) {
-                currentUser.updateEmail(newEmail);
+
+            // Получение текущего email и запроса пароля (например, через отдельное поле)
+            String currentEmail = currentUser.getEmail();
+            String currentPassword = currentPasswordEditText.getText().toString().trim(); // добавь поле для этого в layout
+
+            if (TextUtils.isEmpty(currentPassword)) {
+                Toast.makeText(getContext(), "Введите текущий пароль для подтверждения", Toast.LENGTH_SHORT).show();
+                return;
             }
 
-            if (!TextUtils.isEmpty(newPassword)) {
-                currentUser.updatePassword(newPassword);
-            }
+            AuthCredential credential = EmailAuthProvider.getCredential(currentEmail, currentPassword);
 
-            UserProfileChangeRequest profileUpdate = new UserProfileChangeRequest.Builder()
-                    .setDisplayName(newName)
-                    .build();
-
-            currentUser.updateProfile(profileUpdate).addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    Toast.makeText(getContext(), "Данные обновлены", Toast.LENGTH_SHORT).show();
-                    dismiss();
-                } else {
-                    Toast.makeText(getContext(), "Ошибка при обновлении", Toast.LENGTH_SHORT).show();
+            currentUser.reauthenticate(credential).addOnSuccessListener(authResult -> {
+                // Обновление email
+                if (!TextUtils.isEmpty(newEmail) && !newEmail.equals(currentEmail)) {
+                    currentUser.verifyBeforeUpdateEmail(newEmail)
+                            .addOnSuccessListener(aVoid -> {
+                                Log.d(TAG, "Письмо для подтверждения email отправлено");
+                                Toast.makeText(getContext(), "Подтвердите новую почту через письмо", Toast.LENGTH_LONG).show();
+                                userRef.child(userId).child("e-mail").setValue(newEmail)
+                                        .addOnSuccessListener(aaVoid -> {
+                                            Log.d(TAG, "Email обновлён");
+                                            Toast.makeText(getContext(), "Email обновлён", Toast.LENGTH_SHORT).show();
+                                        })
+                                        .addOnFailureListener(e -> {
+                                            Log.e(TAG, "Ошибка при обновлении email: " + e.getMessage());
+                                            Toast.makeText(getContext(), "Ошибка email: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                                        });
+                            })
+                            .addOnFailureListener(e -> {
+                                Log.e(TAG, "Ошибка при обновлении email: " + e.getMessage());
+                                Toast.makeText(getContext(), "Ошибка email: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                            });
                 }
+
+                // Обновление пароля
+                if (!TextUtils.isEmpty(newPassword)) {
+                    if (newPassword.length() < 6) {
+                        Toast.makeText(getContext(), "Пароль должен быть не менее 6 символов", Toast.LENGTH_SHORT).show();
+                    } else {
+                        currentUser.updatePassword(newPassword)
+                                .addOnSuccessListener(aVoid -> {
+                                    Log.d(TAG, "Пароль обновлён");
+                                    Toast.makeText(getContext(), "Пароль обновлён", Toast.LENGTH_SHORT).show();
+                                    userRef.child(userId).child("paswd").setValue(newPassword)
+                                            .addOnSuccessListener(aaVoid -> {
+                                                Log.d(TAG, "Пароль обновлён");
+                                                Toast.makeText(getContext(), "Пароль обновлён", Toast.LENGTH_SHORT).show();
+                                            })
+                                            .addOnFailureListener(e -> {
+                                                Log.e(TAG, "Ошибка при обновлении пароля: " + e.getMessage());
+                                                Toast.makeText(getContext(), "Ошибка пароля: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                                            });
+                                })
+                                .addOnFailureListener(e -> {
+                                    Log.e(TAG, "Ошибка при обновлении пароля: " + e.getMessage());
+                                    Toast.makeText(getContext(), "Ошибка пароля: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                                });
+                    }
+                }
+
+                // Обновление имени в базе данных
+                if (!TextUtils.isEmpty(newName) && !newName.equals(userName)) {
+                    userRef.child(userId).child("name").setValue(newName)
+                            .addOnSuccessListener(aVoid -> {
+                                Log.d(TAG, "Имя обновлено");
+                                Toast.makeText(getContext(), "Имя обновлено", Toast.LENGTH_SHORT).show();
+                            })
+                            .addOnFailureListener(e -> {
+                                Log.e(TAG, "Ошибка при обновлении имени: " + e.getMessage());
+                                Toast.makeText(getContext(), "Ошибка имени: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                            });
+                }
+
+//                if (!anyChanges) {
+//                    Toast.makeText(getContext(), "Изменений не найдено", Toast.LENGTH_SHORT).show();
+//                }
+
+                //dismiss(); // закрыть диалог
+
+            }).addOnFailureListener(e -> {
+                Log.e(TAG, "Ошибка повторной аутентификации: " + e.getMessage());
+                Toast.makeText(getContext(), "Неверный текущий пароль: " + e.getMessage(), Toast.LENGTH_LONG).show();
             });
         });
+
+
 
         AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
         builder.setView(view);
