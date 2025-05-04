@@ -1,16 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layout_saved"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="8dp"
-    android:paddingRight="8dp"
-    android:paddingTop="8dp">
+    android:padding="8dp">
 
+    <!-- RecyclerView с визитками -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view_saved"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="vertical" />
+
+    <!-- Заглушка при отсутствии визиток -->
+    <LinearLayout
+        android:id="@+id/empty_state_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:visibility="invisible">  <!-- Сначала пусть будет visible для проверки -->
+      <!-- На случай наложения -->
+
+    <TextView
+        android:id="@+id/empty_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Не сохранено ни одной визитки.\nСохраните первую!"
+        android:textSize="18sp"
+        android:textColor="#888888"
+        android:layout_marginBottom="16dp"
+        android:gravity="center"/>
+
+    <ImageView
+        android:id="@+id/plus_icon"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:src="@drawable/ic_add"
+        app:tint="#888888" />
 </LinearLayout>
+</FrameLayout>

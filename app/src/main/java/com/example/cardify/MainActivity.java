@@ -120,4 +120,12 @@ public class MainActivity extends AppCompatActivity {
             fragmentContainer.setPadding(0, 0, 0, bottomHeight);
         });
     }
+
+    public void goToSaveCardFragment() {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, new SaveCardFragment())
+                .commit();
+        bottomNavigationView.setSelectedItemId(R.id.nav_add);
+    }
+
 }
