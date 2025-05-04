@@ -46,6 +46,8 @@ public class QRScannerFragment extends Fragment {
                             .replace(R.id.fragment_container, new SaveCardFragment()) // или другой нужный фрагмент
                             .commit();
 
+                } else {
+                    scanned = false;
                 }
             }
         }
