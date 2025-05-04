@@ -128,4 +128,11 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView.setSelectedItemId(R.id.nav_add);
     }
 
+    public void goToSavedCardsFragment() {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, new SavedCardsFragment())
+                .commit();
+        bottomNavigationView.setSelectedItemId(R.id.nav_saved);
+    }
+
 }

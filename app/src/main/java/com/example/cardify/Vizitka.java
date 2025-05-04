@@ -26,5 +26,13 @@ public class Vizitka implements Serializable {
         this.phone = phone;
         this.site = site;
     }
+
+    public String getCompanyName() {
+        return companyName != null ? companyName : "";
+    }
+
+    public String getSpecialization() {
+        return companySpec != null ? companySpec : "";
+    }
 }
 

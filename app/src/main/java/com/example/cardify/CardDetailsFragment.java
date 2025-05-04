@@ -73,7 +73,12 @@ public class CardDetailsFragment extends Fragment {
                                 .removeValue()
                                 .addOnSuccessListener(aVoid -> {
                                     Toast.makeText(getContext(), "Визитка удалена", Toast.LENGTH_SHORT).show();
-                                    requireActivity().onBackPressed();
+                                    //requireActivity().onBackPressed();
+                                    MainActivity activity = (MainActivity) getActivity();
+                                    if (activity != null) {
+                                        activity.goToSavedCardsFragment();
+                                    }
+
                                 })
                                 .addOnFailureListener(e ->
                                         Toast.makeText(getContext(), "Ошибка удаления", Toast.LENGTH_SHORT).show());
