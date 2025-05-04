@@ -24,7 +24,7 @@
 
         <LinearLayout
             android:orientation="horizontal"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:layout_marginTop="4dp">
@@ -33,8 +33,11 @@
                 android:id="@+id/text_company_spec"
                 android:text="Specialization"
                 android:textSize="14sp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:maxLines="1"
+                android:ellipsize="end"/>
 
             <Space
                 android:layout_width="12dp"
@@ -62,6 +65,10 @@
                     android:layout_marginStart="4dp"
                     android:textColor="#000000" />
             </LinearLayout>
+
+            <Space
+                android:layout_width="12dp"
+                android:layout_height="wrap_content" />
         </LinearLayout>
 
     </LinearLayout>

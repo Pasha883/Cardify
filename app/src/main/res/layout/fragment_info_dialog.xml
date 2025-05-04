@@ -73,6 +73,6 @@
         android:text="Удалить аккаунт"
         android:textColor="#FFFFFF"
         android:backgroundTint="#D32F2F"
-        android:drawableStart="@drawable/ic_delete"
+        android:drawableLeft="@drawable/ic_delete"
         android:drawablePadding="8dp" />
 </LinearLayout>

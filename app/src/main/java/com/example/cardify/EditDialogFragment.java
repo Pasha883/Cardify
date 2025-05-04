@@ -33,6 +33,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class EditDialogFragment extends DialogFragment {
 
     private EditText nameEditText, emailEditText, passwordEditText, currentPasswordEditText;
@@ -96,6 +98,8 @@ public class EditDialogFragment extends DialogFragment {
         }
 
         saveButton.setOnClickListener(v -> {
+            AtomicInteger progress = new AtomicInteger(0);
+
             String newName = nameEditText.getText().toString().trim();
             String newEmail = emailEditText.getText().toString().trim();
             String newPassword = passwordEditText.getText().toString().trim();
@@ -138,6 +142,10 @@ public class EditDialogFragment extends DialogFragment {
                                                             if (getActivity() != null) {
                                                                 getActivity().finish();
                                                             }
+                                                            progress.getAndIncrement();
+                                                            if (progress.get() == 3) {
+                                                                dismiss();
+                                                            }
                                                         })
                                                         .addOnFailureListener(e -> {
                                                             Log.e(TAG, "Ошибка при обновлении email: " + e.getMessage());
@@ -152,6 +160,11 @@ public class EditDialogFragment extends DialogFragment {
                             .setNegativeButton("Отмена", null)
                             .show();
 
+                } else{
+                    progress.getAndIncrement();
+                    if (progress.get() == 3) {
+                        dismiss();
+                    }
                 }
 
                 // Обновление пароля
@@ -167,6 +180,10 @@ public class EditDialogFragment extends DialogFragment {
                                             .addOnSuccessListener(aaVoid -> {
                                                 Log.d(TAG, "Пароль обновлён");
                                                 Toast.makeText(getContext(), "Пароль обновлён", Toast.LENGTH_SHORT).show();
+                                                progress.getAndIncrement();
+                                                if (progress.get() == 3) {
+                                                    dismiss();
+                                                }
                                             })
                                             .addOnFailureListener(e -> {
                                                 Log.e(TAG, "Ошибка при обновлении пароля: " + e.getMessage());
@@ -178,6 +195,11 @@ public class EditDialogFragment extends DialogFragment {
                                     Toast.makeText(getContext(), "Ошибка пароля: " + e.getMessage(), Toast.LENGTH_LONG).show();
                                 });
                     }
+                } else{
+                    progress.getAndIncrement();
+                    if (progress.get() == 3) {
+                        dismiss();
+                    }
                 }
 
                 // Обновление имени в базе данных
@@ -186,11 +208,20 @@ public class EditDialogFragment extends DialogFragment {
                             .addOnSuccessListener(aVoid -> {
                                 Log.d(TAG, "Имя обновлено");
                                 Toast.makeText(getContext(), "Имя обновлено", Toast.LENGTH_SHORT).show();
+                                progress.getAndIncrement();
+                                if (progress.get() == 3) {
+                                    dismiss();
+                                }
                             })
                             .addOnFailureListener(e -> {
                                 Log.e(TAG, "Ошибка при обновлении имени: " + e.getMessage());
                                 Toast.makeText(getContext(), "Ошибка имени: " + e.getMessage(), Toast.LENGTH_LONG).show();
                             });
+                } else {
+                    progress.getAndIncrement();
+                    if (progress.get() == 3) {
+                        dismiss();
+                    }
                 }
 
 //                if (!anyChanges) {
