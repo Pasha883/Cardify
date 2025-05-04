@@ -51,6 +51,7 @@ dependencies {
     implementation(libs.okhttp)
     implementation(libs.picasso)
     implementation(libs.material)
+    implementation("com.github.yalantis:ucrop:2.2.8")
 
 
 
