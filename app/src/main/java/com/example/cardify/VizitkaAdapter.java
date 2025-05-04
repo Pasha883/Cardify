@@ -68,5 +68,11 @@ public class VizitkaAdapter extends RecyclerView.Adapter<VizitkaAdapter.ViewHold
             moreButton = itemView.findViewById(R.id.btn_more);
         }
     }
+
+    public void updateList(List<Vizitka> newList) {
+        this.vizitkaList = newList;
+        notifyDataSetChanged();
+    }
+
 }
 

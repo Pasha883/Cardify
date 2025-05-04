@@ -2,6 +2,7 @@ package com.example.cardify;
 
 import static android.app.Activity.RESULT_OK;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -171,13 +172,21 @@ public class SettingsFragment extends Fragment {
     private void setupLogoutClickListener() {
         mAuth = FirebaseAuth.getInstance();
         logoutLayout.setOnClickListener(v -> {
-            mAuth.signOut();
-            Intent intent = new Intent(requireActivity(), MainActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-            if (getActivity() != null) {
-                getActivity().finish();
-            }
+            new AlertDialog.Builder(requireContext())
+                    .setTitle("Выйти из аккаунта")
+                    .setMessage("Вы уверены, что хотите выйти из аккаунта?")
+                    .setPositiveButton("Да", (dialog, which) -> {
+                        mAuth.signOut();
+                        Intent intent = new Intent(requireActivity(), MainActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                        if (getActivity() != null) {
+                            getActivity().finish();
+                        }
+                    })
+                    .setNegativeButton("Отмена", null)
+                    .show();
+
         });
     }
 

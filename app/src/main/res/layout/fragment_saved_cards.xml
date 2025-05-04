@@ -1,43 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/layout_saved"
+    android:id="@+id/scrollViewSavedCards"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="8dp">
+    android:fillViewport="true"
+    android:background="#F5F5F5">
 
-    <!-- RecyclerView с визитками -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view_saved"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scrollbars="vertical" />
-
-    <!-- Заглушка при отсутствии визиток -->
     <LinearLayout
-        android:id="@+id/empty_state_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:visibility="invisible">  <!-- Сначала пусть будет visible для проверки -->
-      <!-- На случай наложения -->
-
-    <TextView
-        android:id="@+id/empty_text"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Не сохранено ни одной визитки.\nСохраните первую!"
-        android:textSize="18sp"
-        android:textColor="#888888"
-        android:layout_marginBottom="16dp"
-        android:gravity="center"/>
+        android:orientation="vertical"
+        android:padding="8dp">
 
-    <ImageView
-        android:id="@+id/plus_icon"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:src="@drawable/ic_add"
-        app:tint="#888888" />
-</LinearLayout>
-</FrameLayout>
+        <!-- Поисковая строка и кнопка фильтра -->
+        <LinearLayout
+            android:id="@+id/search_filter_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="8dp"
+            android:layout_marginBottom="8dp"
+            android:visibility="gone">
+
+            <EditText
+                android:id="@+id/search_input"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:hint="Поиск по компании"
+                android:padding="8dp"
+                android:background="@drawable/item_background"
+                android:inputType="text" />
+
+            <ImageView
+                android:id="@+id/filter_button"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="8dp"
+                android:src="@drawable/ic_filter_list"
+                android:contentDescription="Фильтр" />
+        </LinearLayout>
+
+        <!-- Список визиток -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view_saved"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false" />
+
+        <!-- Заглушка при отсутствии визиток -->
+        <LinearLayout
+            android:id="@+id/empty_state_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingTop="24dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/empty_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:gravity="center"
+                android:text="Не сохранено ни одной визитки.\nСохраните первую!"
+                android:textColor="#888888"
+                android:textSize="18sp" />
+
+            <ImageView
+                android:id="@+id/plus_icon"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_add"
+                app:tint="#888888" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>

@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -27,8 +28,9 @@ public class SavedCardsFragment extends Fragment {
     private VizitkaAdapter adapter;
     private List<Vizitka> vizitkaList;
     private TextView emptyText;
-    private ImageView plusIcon;
-    private LinearLayout emptyStateLayout;
+    private ImageView plusIcon, filterButton;
+    private LinearLayout emptyStateLayout, searchFilterLayout;
+    EditText searchInput;
 
     private DatabaseReference vizitRef;
     private String userId = "";
@@ -42,6 +44,10 @@ public class SavedCardsFragment extends Fragment {
         emptyText = view.findViewById(R.id.empty_text);
         plusIcon = view.findViewById(R.id.plus_icon);
         emptyStateLayout = view.findViewById(R.id.empty_state_layout);
+        searchInput = view.findViewById(R.id.search_input);
+        filterButton = view.findViewById(R.id.filter_button);
+        searchFilterLayout = view.findViewById(R.id.search_filter_layout);
+
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         vizitkaList = new ArrayList<>();
@@ -116,6 +122,7 @@ public class SavedCardsFragment extends Fragment {
         //emptyText.setVisibility(isEmpty ? View.VISIBLE : View.INVISIBLE);
         //plusIcon.setVisibility(isEmpty ? View.VISIBLE : View.INVISIBLE);
         emptyStateLayout.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
+        searchFilterLayout.setVisibility(isEmpty ? View.GONE : View.VISIBLE);
         if (isEmpty) {
 
             emptyStateLayout.setOnClickListener(v -> {
