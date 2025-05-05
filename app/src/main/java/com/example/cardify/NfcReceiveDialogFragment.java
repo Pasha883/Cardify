@@ -1,5 +1,8 @@
 package com.example.cardify;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.app.Dialog;
 import android.content.Intent;
 import android.nfc.NfcAdapter;
@@ -16,6 +19,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -43,6 +47,33 @@ public class NfcReceiveDialogFragment extends DialogFragment {
 
         resultTextView = view.findViewById(R.id.text_recived_id);
         handleIntent(requireActivity().getIntent());
+
+        View[] waves = {
+                view.findViewById(R.id.wave1),
+                view.findViewById(R.id.wave2),
+                view.findViewById(R.id.wave3)
+        };
+
+        for (int i = 0; i < waves.length; i++) {
+            View wave = waves[i];
+            wave.setScaleX(3f);
+            wave.setScaleY(3f);
+            wave.setAlpha(0f);
+
+            ObjectAnimator scaleX = ObjectAnimator.ofFloat(wave, "scaleX", 3f, 0f);
+            ObjectAnimator scaleY = ObjectAnimator.ofFloat(wave, "scaleY", 3f, 0f);
+            ObjectAnimator alpha = ObjectAnimator.ofFloat(wave, "alpha", 0f, 1f, 0f);
+
+            AnimatorSet animatorSet = new AnimatorSet();
+            animatorSet.playTogether(scaleX, scaleY, alpha);
+            animatorSet.setDuration(2000);
+            animatorSet.setStartDelay(i * 600); // волны одна за другой
+            animatorSet.setInterpolator(new AccelerateDecelerateInterpolator());
+            scaleX.setRepeatCount(ValueAnimator.INFINITE);
+            scaleY.setRepeatCount(ValueAnimator.INFINITE);
+            alpha.setRepeatCount(ValueAnimator.INFINITE);
+            animatorSet.start();
+        }
 
         return new AlertDialog.Builder(requireActivity())
                 .setView(view)

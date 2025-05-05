@@ -6,12 +6,47 @@
     android:gravity="center"
     android:background="@drawable/item_background">
 
-    <ImageView
-        android:id="@+id/nfc_image"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:src="@drawable/ic_nfc"
-        android:layout_gravity="center"/>
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/wave_container"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_gravity="center"
+        android:gravity="center">
+
+        <!-- Фоновый круг -->
+
+
+        <!-- Волны -->
+        <View
+            android:id="@+id/wave1"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:background="@drawable/wave_circle" />
+
+        <View
+            android:id="@+id/wave2"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:background="@drawable/wave_circle" />
+
+        <View
+            android:id="@+id/wave3"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:background="@drawable/wave_circle" />
+
+        <ImageView
+            android:id="@+id/nfc_image"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/ic_nfc"
+            android:layout_gravity="center" />
+    </FrameLayout>
+
+
 
     <TextView
         android:id="@+id/nfc_text"
