@@ -31,5 +31,12 @@
         android:drawableLeft="@drawable/ic_qr_scan"
         android:layout_marginTop="12dp" />
 
+    <Button
+        android:id="@+id/btn_nfc_add"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Считать визитку по NFC"
+        android:layout_marginTop="12dp" />
+
 
 </LinearLayout>

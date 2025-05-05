@@ -68,6 +68,10 @@ public class VizitkaCreatedAdapter extends RecyclerView.Adapter<VizitkaCreatedAd
                         return true;
                     case "Поделиться через NFC":
                         Toast.makeText(context, "Поделиться через NFC", Toast.LENGTH_SHORT).show();
+                        FragmentActivity activity2 = (FragmentActivity) context;
+                        NfcSenderDialogFragment dialog2 = NfcSenderDialogFragment.newInstance(card.id);
+                        dialog2.show(activity2.getSupportFragmentManager(), "nfc_sender_dialog");
+
                         // TODO: Реализация передачи через NFC
                         return true;
                 }

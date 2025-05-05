@@ -1,0 +1,14 @@
+<host-apdu-service
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:description="@string/app_name"
+    android:requireDeviceUnlock="false">
+
+    <service
+        android:name=".CardHCEService"
+        android:exported="true"
+        android:permission="android.permission.BIND_NFC_SERVICE"/>
+
+    <aid-group android:category="other" android:description="@string/app_name">
+        <aid-filter android:name="F0010203040506"/>
+    </aid-group>
+</host-apdu-service>

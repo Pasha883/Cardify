@@ -25,6 +25,7 @@ public class SaveCardFragment extends Fragment {
     private EditText editCardNumber;
     private Button btnAddCard;
     private Button btnScanQr;
+    private Button btnNfcAdd;
 
     private DatabaseReference database;
     private String userId;
@@ -38,6 +39,7 @@ public class SaveCardFragment extends Fragment {
         editCardNumber = view.findViewById(R.id.edit_card_number);
         btnAddCard = view.findViewById(R.id.btn_add_card);
         btnScanQr = view.findViewById(R.id.btn_scan_qr);
+        btnNfcAdd = view.findViewById(R.id.btn_nfc_add);
 
         database = FirebaseDatabase.getInstance().getReference();
         userId = "";
@@ -55,6 +57,11 @@ public class SaveCardFragment extends Fragment {
                     .replace(R.id.fragment_container, qrScannerFragment)
                     .addToBackStack(null)
                     .commit();
+        });
+
+        btnNfcAdd.setOnClickListener(v -> {
+            NfcReceiveDialogFragment dialog = NfcReceiveDialogFragment.newInstance();
+            dialog.show(getParentFragmentManager(), "nfc_receive_dialog");
         });
 
         return view;
