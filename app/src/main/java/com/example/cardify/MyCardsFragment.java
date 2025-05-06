@@ -37,6 +37,7 @@ public class MyCardsFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_my_cards, container, false);
 
+
         recyclerView = view.findViewById(R.id.recycler_my_cards);
         btnCreateCard = view.findViewById(R.id.btn_create_card);
         adapter = new VizitkaCreatedAdapter(myCardsList, getContext());

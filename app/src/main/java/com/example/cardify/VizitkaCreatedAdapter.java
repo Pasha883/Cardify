@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -15,6 +14,8 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
+
+import androidx.appcompat.widget.PopupMenu;
 
 import java.util.List;
 
@@ -54,8 +55,14 @@ public class VizitkaCreatedAdapter extends RecyclerView.Adapter<VizitkaCreatedAd
 
         holder.btnShare.setOnClickListener(v -> {
             PopupMenu popupMenu = new PopupMenu(context, holder.btnShare);
-            popupMenu.getMenu().add("Поделиться через QR");
-            popupMenu.getMenu().add("Поделиться через NFC");
+            // Применяем стиль
+            popupMenu.getMenuInflater().inflate(R.menu.popup_menu_edit, popupMenu.getMenu());
+
+            popupMenu.setForceShowIcon(true);
+            // Добавляем пункты меню
+            popupMenu.getMenu().add(0, 0, 0, "Поделиться через QR").setIcon(R.drawable.ic_qr_scan);
+            popupMenu.getMenu().add(0, 1, 1, "Поделиться через NFC").setIcon(R.drawable.ic_nfc);
+
 
             popupMenu.setOnMenuItemClickListener(item -> {
                 switch (item.getTitle().toString()) {

@@ -1,94 +1,107 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
     android:padding="12dp"
-    android:background="@drawable/item_background"
-    android:layout_marginBottom="8dp">
+    android:backgroundTint="@color/card"
+    app:cardCornerRadius="30dp"
+    app:cardElevation="0dp"
+    app:strokeWidth="0dp">
 
     <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1">
-
-        <TextView
-            android:id="@+id/text_company_name"
-            android:text="Company Name"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+        android:orientation="horizontal"
+        android:padding="12dp">
 
         <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:layout_marginTop="4dp">
+            android:layout_weight="1"
+            android:orientation="vertical">
 
             <TextView
-                android:id="@+id/text_company_spec"
-                android:text="Specialization"
-                android:textSize="14sp"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:maxLines="1"
-                android:ellipsize="end"/>
-
-            <Space
-                android:layout_width="12dp"
-                android:layout_height="wrap_content" />
-
-            <LinearLayout
-                android:orientation="horizontal"
+                android:id="@+id/text_company_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical">
+                android:text="Company Name"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
-                <ImageView
-                    android:id="@+id/icon_users"
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
-                    android:src="@drawable/ic_users"
-                    android:contentDescription="Users" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/text_users_count"
+                    android:id="@+id/text_company_spec"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="Specialization"
+                    android:textSize="14sp" />
+
+                <Space
+                    android:layout_width="12dp"
+                    android:layout_height="wrap_content" />
+
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="0"
-                    android:textSize="14sp"
-                    android:layout_marginStart="4dp"
-                    android:textColor="#000000" />
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/icon_users"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:contentDescription="Users"
+                        android:src="@drawable/ic_users"
+                        app:tint="@color/icon"/>
+
+                    <TextView
+                        android:id="@+id/text_users_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:text="0"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+                <Space
+                    android:layout_width="12dp"
+                    android:layout_height="wrap_content" />
             </LinearLayout>
 
-            <Space
-                android:layout_width="12dp"
-                android:layout_height="wrap_content" />
         </LinearLayout>
 
+        <!-- Кнопка редактирования -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_more"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="Редактировать"
+            android:backgroundTint="@color/buttonn"
+            app:cornerRadius="19dp"
+            android:textColor="@color/button_text"/>
+
+        <!-- Кнопка для открытия меню "поделиться" -->
+        <ImageButton
+            android:id="@+id/btn_share"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_vertical"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Share"
+            android:src="@drawable/ic_share"
+            app:tint="@color/icon"/>
     </LinearLayout>
-
-    <!-- Кнопка редактирования -->
-    <Button
-        android:id="@+id/btn_more"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Редактировать"
-        android:layout_gravity="center_vertical" />
-
-    <!-- Кнопка для открытия меню "поделиться" -->
-    <ImageButton
-        android:id="@+id/btn_share"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:src="@drawable/ic_share"
-        android:background="?android:attr/selectableItemBackgroundBorderless"
-        android:contentDescription="Share"
-        android:layout_gravity="center_vertical"
-         />
-</LinearLayout>
+</com.google.android.material.card.MaterialCardView>

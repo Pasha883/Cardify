@@ -114,7 +114,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:text="Тема"
-                        android:textColor="@color/light_text"
+                        android:textColor="#000000"
                         android:textSize="16sp" />
                 </LinearLayout>
             </LinearLayout>

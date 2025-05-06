@@ -1,16 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <!-- Светлая тема -->
-    <color name="light_background">#F5F5F5</color>
-    <color name="light_card">#FFFFFF</color>
-    <color name="light_text">#000000</color>
-    <color name="light_divider">#E0E0E0</color>
-
-    <!-- Тёмная тема -->
-    <color name="dark_background">#121212</color>
-    <color name="dark_card">#1E1E1E</color>
-    <color name="dark_text">#FFFFFF</color>
-    <color name="dark_divider">#2C2C2C</color>
-
+    <color name="background">#fef7ff</color>
+    <color name="text">#000000</color>
+    <color name="button_text">#49454f</color>
+    <color name="card">#f1e8f7</color>
+    <color name="icon">#625b71</color>
+    <color name="buttonn">#e8ddf8</color>
 </resources>
+
