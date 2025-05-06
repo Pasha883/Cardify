@@ -40,6 +40,8 @@ public class CardDetailsFragment extends Fragment {
 
         vizitka = (Vizitka) getArguments().getSerializable(ARG_VIZITKA);
 
+        TextView creatorInfo = view.findViewById(R.id.creator_info);
+
         setField(view, R.id.tv_company_name, vizitka.companyName);
         setField(view, R.id.tv_company_spec, vizitka.companySpec);
         setField(view, R.id.tv_description, vizitka.description);
@@ -48,6 +50,30 @@ public class CardDetailsFragment extends Fragment {
         setClickableField(view, R.id.container_phone, R.id.tv_phone, vizitka.phone, FieldType.PHONE);
         setClickableField(view, R.id.container_site, R.id.tv_site, vizitka.site, FieldType.SITE);
         setClickableField(view, R.id.container_tg, R.id.tv_tg, vizitka.TG, FieldType.TG);
+
+        // Запрос к БД
+        FirebaseDatabase.getInstance().getReference("users")
+                .child(vizitka.creatorId)
+                .child("isVisible")
+                .get()
+                .addOnSuccessListener(snapshot -> {
+                    Boolean isVisible = snapshot.getValue(Boolean.class);
+                    if (isVisible != null && isVisible) {
+                        creatorInfo.setVisibility(View.VISIBLE);
+                        creatorInfo.setText("Визитка создана пользователем: " + vizitka.creatorId);
+                    } else {
+                        creatorInfo.setVisibility(View.GONE);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    // Ошибка получения данных
+                    Toast.makeText(getContext(), "Ошибка загрузки данных о создателе", Toast.LENGTH_SHORT).show();
+                });
+
+        creatorInfo.setOnClickListener(v -> {
+            UserInfoDialogFragment dialog = UserInfoDialogFragment.newInstance(vizitka.creatorId);
+            dialog.show(getParentFragmentManager(), "user_info");
+        });
 
         // Кнопка удаления
         Button deleteBtn = view.findViewById(R.id.btn_delete_card);

@@ -12,11 +12,12 @@ public class VizitkaCreated implements Serializable {
     public String phone;
     public String site;
     public int users = 0; // <-- добавили поле users
+    public String creatorId; // <-- поле для хранения ID создателя визитки
 
     public VizitkaCreated() {}
 
     public VizitkaCreated(String id, String TG, String companyName, String companySpec, String description,
-                          String email, String phone, String site, int users) {
+                          String email, String phone, String site, int users, String creatorId) {
         this.id = id;
         this.TG = TG;
         this.companyName = companyName;
@@ -26,5 +27,6 @@ public class VizitkaCreated implements Serializable {
         this.phone = phone;
         this.site = site;
         this.users = users;
+        this.creatorId = creatorId;
     }
 }

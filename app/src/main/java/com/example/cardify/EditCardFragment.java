@@ -119,6 +119,7 @@ public class EditCardFragment extends Fragment {
         String updatedAddress = editAddress.getText().toString().trim();
         String updatedWebsite = editWebsite.getText().toString().trim();
         String updatedDescription = editDescription.getText().toString().trim();
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         if (TextUtils.isEmpty(updatedName)) {
             editCompanyName.setError("Название обязательно");
@@ -132,6 +133,7 @@ public class EditCardFragment extends Fragment {
         card.TG = updatedAddress;
         card.site = updatedWebsite;
         card.description = updatedDescription;
+        card.creatorId = userId;
 
         DatabaseReference ref = FirebaseDatabase.getInstance()
                 .getReference("vizitcards")

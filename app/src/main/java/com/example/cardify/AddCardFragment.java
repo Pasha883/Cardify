@@ -94,6 +94,7 @@ public class AddCardFragment extends Fragment {
         String phone = etPhone.getText().toString().trim();
         String site = etSite.getText().toString().trim();
         String tg = etTG.getText().toString().trim();
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         if (TextUtils.isEmpty(name) || TextUtils.isEmpty(spec)) {
             Toast.makeText(getContext(), "Заполните обязательные поля", Toast.LENGTH_SHORT).show();
@@ -111,6 +112,7 @@ public class AddCardFragment extends Fragment {
         cardData.put("site", site);
         cardData.put("TG", tg);
         cardData.put("users", 0); // Важно: users = 0 при создании
+        cardData.put("creatorId", userId);
 
         cardsRef.child(cardId).setValue(cardData).addOnSuccessListener(unused -> {
             userRef.child("createdVizitcards").child(cardId).setValue("")

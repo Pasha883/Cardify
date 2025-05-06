@@ -95,6 +95,12 @@ public class SettingsFragment extends Fragment {
 //            openFileChooser();
 //        });
 
+        LinearLayout layoutPrivacy = view.findViewById(R.id.layoutPrivacy);
+        layoutPrivacy.setOnClickListener(v -> {
+            // Получи текущее значение из Firebase или кэша
+            getVisibilityStatusAndShowDialog();
+        });
+
         profileSection.setOnClickListener(v -> {
             InfoDialogFragment dialog = new InfoDialogFragment();
             dialog.setOnDialogCloseListener(() -> {
@@ -202,8 +208,8 @@ public class SettingsFragment extends Fragment {
         Intent intent = new Intent(requireContext(), MainActivity.class);
         intent.putExtra("openSettings", true);
         startActivity(intent);
-        requireActivity().finish();
-        requireActivity().overridePendingTransition(0, 0);
+        //requireActivity().finish();
+        //requireActivity().overridePendingTransition(0, 0);
     }
 
     private void updateThemeIcon() {
@@ -351,6 +357,17 @@ public class SettingsFragment extends Fragment {
                     .placeholder(R.drawable.ic_profile_placeholder)
                     .error(R.drawable.ic_profile_placeholder)
                     .into(imageProfile);
+        });
+    }
+
+    private void getVisibilityStatusAndShowDialog() {
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("users").child(userId).child("isVisible");
+
+        ref.get().addOnSuccessListener(dataSnapshot -> {
+            boolean currentVisibility = dataSnapshot.getValue(Boolean.class) != null && dataSnapshot.getValue(Boolean.class);
+            PrivacyDialogFragment dialog = new PrivacyDialogFragment(currentVisibility);
+            dialog.show(getParentFragmentManager(), "PrivacyDialog");
         });
     }
 }

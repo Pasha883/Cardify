@@ -12,11 +12,12 @@ public class Vizitka implements Serializable {
     public String email;
     public String phone;
     public String site;
+    public String creatorId; // <-- поле для хранения ID создателя визитки
 
     public Vizitka() {} // Пустой конструктор обязателен для Firebase
 
     public Vizitka(String id, String TG, String companyName, String companySpec, String description,
-                   String email, String phone, String site) {
+                   String email, String phone, String site, String creatorId) {
         this.id = id;
         this.TG = TG;
         this.companyName = companyName;
@@ -25,6 +26,7 @@ public class Vizitka implements Serializable {
         this.email = email;
         this.phone = phone;
         this.site = site;
+        this.creatorId = creatorId;
     }
 
     public String getCompanyName() {

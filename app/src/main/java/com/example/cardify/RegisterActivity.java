@@ -80,6 +80,7 @@ public class RegisterActivity extends AppCompatActivity {
                             userData.put("paswd", password); // Лучше не хранить так, а использовать только Firebase Auth
                             String randomName = generateRandomName();
                             userData.put("name", randomName);
+                            userData.put("isVisible", true);
                             userData.put("createdVizitcards", new HashMap<>());
                             userData.put("savedVizitcards", new HashMap<>());
 
