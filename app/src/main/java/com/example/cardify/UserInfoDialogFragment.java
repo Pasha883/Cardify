@@ -28,6 +28,7 @@ import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.*;
+import com.google.firebase.database.annotations.NotNull;
 import com.squareup.picasso.Picasso;
 import com.yalantis.ucrop.UCrop;
 
@@ -44,8 +45,10 @@ public class UserInfoDialogFragment extends DialogFragment {
     TextView emailTextView;
     TextView createdCountTextView;
     TextView savedCountTextView;
+    LayoutInflater inflater;
 
     private static final String ARG_USER_ID = "userId";
+    private String userId;
 
     public static UserInfoDialogFragment newInstance(String userId) {
         UserInfoDialogFragment fragment = new UserInfoDialogFragment();
@@ -55,11 +58,20 @@ public class UserInfoDialogFragment extends DialogFragment {
         return fragment;
     }
 
-    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_user_info_dialog, container, false);
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        userId = getArguments().getString(ARG_USER_ID);
+        setStyle(STYLE_NO_TITLE, R.style.UserInfoDialog);
+    }
+
+    @NotNull
+    @Override
+    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity(), R.style.UserInfoDialog);
+        inflater = requireActivity().getLayoutInflater();
+        View view = inflater.inflate(R.layout.fragment_user_info_dialog, null);
+        builder.setView(view);
 
         String userId = getArguments().getString(ARG_USER_ID);
 
@@ -75,7 +87,7 @@ public class UserInfoDialogFragment extends DialogFragment {
         loadUserProfile();
 
 
-        return view;
+        return builder.create();
     }
 
     @Override

@@ -2,9 +2,11 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:paddingLeft="24dp"
     android:paddingRight="24dp"
-    android:paddingTop="24dp">
+    android:paddingTop="24dp"
+    android:background="@color/background">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -17,7 +19,7 @@
             android:id="@+id/tv_company_name"
             android:textStyle="bold"
             android:textSize="24sp"
-            android:textColor="#000000"
+            android:textColor="@color/button_text"
             android:layout_marginBottom="12dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
@@ -27,7 +29,7 @@
             android:id="@+id/tv_company_spec"
             android:textStyle="italic"
             android:textSize="18sp"
-            android:textColor="#555555"
+            android:textColor="@color/button_text"
             android:layout_marginBottom="12dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
@@ -38,7 +40,8 @@
             android:textSize="18sp"
             android:layout_marginBottom="16dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textColor="@color/button_text"/>
 
         <!-- Email -->
         <LinearLayout
@@ -51,13 +54,15 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_email"/>
+                android:src="@drawable/ic_email"
+                app:tint="@color/button_text"/>
             <TextView
                 android:id="@+id/tv_email"
                 android:textSize="18sp"
                 android:layout_marginStart="8dp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:textColor="@color/button_text"/>
         </LinearLayout>
 
         <!-- Телефон -->
@@ -71,13 +76,15 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_phone"/>
+                android:src="@drawable/ic_phone"
+                app:tint="@color/button_text"/>
             <TextView
                 android:id="@+id/tv_phone"
                 android:textSize="18sp"
                 android:layout_marginStart="8dp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:textColor="@color/button_text"/>
         </LinearLayout>
 
         <!-- Сайт -->
@@ -91,13 +98,15 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_web"/>
+                android:src="@drawable/ic_web"
+                app:tint="@color/button_text"/>
             <TextView
                 android:id="@+id/tv_site"
                 android:textSize="18sp"
                 android:layout_marginStart="8dp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:textColor="@color/button_text"/>
         </LinearLayout>
 
         <!-- Telegram -->
@@ -111,13 +120,15 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_telegram"/>
+                android:src="@drawable/ic_telegram"
+                app:tint="@color/button_text"/>
             <TextView
                 android:id="@+id/tv_tg"
                 android:textSize="18sp"
                 android:layout_marginStart="8dp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:textColor="@color/button_text"/>
         </LinearLayout>
 
 
@@ -129,7 +140,7 @@
             android:layout_marginTop="24dp"
             android:text="Удалить визитку"
             android:drawableLeft="@drawable/ic_delete"
-            android:backgroundTint="@android:color/holo_red_dark"
+            android:backgroundTint="@color/design_default_color_error"
             android:textColor="#FFFFFF"/>
 
         <Space

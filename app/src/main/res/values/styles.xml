@@ -7,4 +7,12 @@
     <style name="PopupMenuStyle" parent="Widget.AppCompat.PopupMenu">
         <item name="android:popupBackground">@drawable/popup_menu_background</item>
     </style>
+    <style name="UserInfoDialog" parent="ThemeOverlay.Material3.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowMinWidthMajor">90%</item>
+        <item name="android:windowMinWidthMinor">90%</item>
+        <item name="android:windowElevation">0dp</item>
+    </style>
 </resources>

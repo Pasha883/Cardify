@@ -38,7 +38,8 @@
             android:textStyle="bold"
             android:layout_marginBottom="8dp"
             android:paddingStart="4dp"
-            android:paddingEnd="4dp" />
+            android:paddingEnd="4dp"
+            android:textColor="@color/button_text"/>
 
         <!-- Список визиток -->
         <androidx.recyclerview.widget.RecyclerView
@@ -47,6 +48,34 @@
             android:layout_height="wrap_content"
             android:nestedScrollingEnabled="false"
              />
+
+        <!-- Заглушка при отсутствии визиток -->
+        <LinearLayout
+            android:id="@+id/empty_state_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingTop="24dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/empty_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:gravity="center"
+                android:text="Не создано ни одной визитки.\nСоздайте первую!"
+                android:textSize="18sp"
+                android:textColor="@color/button_text"/>
+
+            <ImageView
+                android:id="@+id/plus_icon"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_add_new"
+                app:tint="@color/button_text" />
+        </LinearLayout>
 
     </LinearLayout>
 
