@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -78,7 +79,7 @@ public class CardDetailsFragment extends Fragment {
         // Кнопка удаления
         Button deleteBtn = view.findViewById(R.id.btn_delete_card);
         deleteBtn.setOnClickListener(v -> {
-            AlertDialog dialog = new AlertDialog.Builder(requireContext())
+            AlertDialog dialog = new AlertDialog.Builder(requireContext(), R.style.DeleteCardDialog)
                     .setTitle("Удалить визитку?")
                     .setMessage("Вы уверены? Это действие необратимо.")
                     .setPositiveButton("Да", (dialogInterface, which) -> {
@@ -113,8 +114,18 @@ public class CardDetailsFragment extends Fragment {
                     .create();
 
             dialog.setOnShowListener(dialogInterface -> {
-                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.RED);
-                dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.GRAY);
+                // Получаем ширину экрана
+                DisplayMetrics displayMetrics = new DisplayMetrics();
+                requireActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+                int screenWidth = displayMetrics.widthPixels;
+
+                // Задаем желаемую ширину в пикселях (например, 80% от ширины экрана)
+                int dialogWidth = (int) (screenWidth * 0.8); // 80% от ширины экрана
+
+                // Устанавливаем ширину окна диалога
+                if (dialog.getWindow() != null) {
+                    dialog.getWindow().setLayout(dialogWidth, ViewGroup.LayoutParams.WRAP_CONTENT);
+                }
             });
 
             dialog.show();

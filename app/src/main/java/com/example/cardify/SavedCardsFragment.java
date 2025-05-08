@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.*;
@@ -197,8 +198,8 @@ public class SavedCardsFragment extends Fragment {
             checkedItems[i] = selectedSpecializations.contains(specArray[i]);
         }
 
-        new AlertDialog.Builder(getContext())
-                .setTitle("Выберите специализации")
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireContext(), R.style.FilterDialog);
+        builder.setTitle("Выберите специализации")
                 .setMultiChoiceItems(specArray, checkedItems, (dialog, which, isChecked) -> {
                     if (isChecked) {
                         selectedSpecializations.add(specArray[which]);

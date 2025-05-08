@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/scrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
-    android:paddingTop="16dp">
+    android:paddingTop="16dp"
+    android:background="@color/background">
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -19,19 +21,25 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Название компании"
+            android:textColorHint="@color/button_text"
             android:inputType="textPersonName"
             android:drawableStart="@drawable/ic_company"
-            android:padding="12dp" />
+            android:drawableTint="@color/button_text"
+            android:padding="12dp"
+            android:background="@drawable/search_background"/>
 
         <EditText
             android:id="@+id/et_company_spec"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Специализация"
+            android:textColorHint="@color/button_text"
             android:inputType="text"
             android:drawableStart="@drawable/ic_specialization"
+            android:drawableTint="@color/button_text"
             android:padding="12dp"
-            android:layout_marginTop="12dp" />
+            android:layout_marginTop="12dp"
+            android:background="@drawable/search_background"/>
 
         <!-- Описание -->
         <EditText
@@ -39,61 +47,82 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Описание"
+            android:textColorHint="@color/button_text"
             android:drawableLeft="@drawable/ic_description"
+            android:drawableTint="@color/button_text"
             android:padding="12dp"
+            android:layout_marginTop="12dp"
             android:inputType="textMultiLine"
             android:minLines="3"
-            android:maxLines="5" />
+            android:maxLines="5"
+            android:background="@drawable/search_background"/>
 
         <EditText
             android:id="@+id/et_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Email"
+            android:textColorHint="@color/button_text"
             android:inputType="textEmailAddress"
             android:drawableStart="@drawable/ic_email"
+            android:drawableTint="@color/button_text"
             android:padding="12dp"
-            android:layout_marginTop="12dp" />
+            android:layout_marginTop="12dp"
+            android:background="@drawable/search_background"/>
 
         <EditText
             android:id="@+id/et_phone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Телефон"
+            android:textColorHint="@color/button_text"
             android:inputType="phone"
             android:drawableStart="@drawable/ic_phone"
+            android:drawableTint="@color/button_text"
             android:padding="12dp"
-            android:layout_marginTop="12dp" />
+            android:layout_marginTop="12dp"
+            android:background="@drawable/search_background"/>
 
         <EditText
             android:id="@+id/et_site"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Сайт"
+            android:textColorHint="@color/button_text"
             android:inputType="textUri"
             android:drawableStart="@drawable/ic_web"
+            android:drawableTint="@color/button_text"
             android:padding="12dp"
-            android:layout_marginTop="12dp" />
+            android:layout_marginTop="12dp"
+            android:background="@drawable/search_background"/>
 
         <EditText
             android:id="@+id/et_telegram"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Telegram"
+            android:textColorHint="@color/button_text"
             android:inputType="text"
             android:drawableStart="@drawable/ic_telegram"
+            android:drawableTint="@color/button_text"
             android:padding="12dp"
-            android:layout_marginTop="12dp" />
+            android:layout_marginTop="12dp"
+            android:background="@drawable/search_background"/>
 
         <!-- Кнопка сохранить -->
-        <Button
-            android:id="@+id/btn_save_changes"
+        <com.google.android.material.button.MaterialButton
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:text="Создать"
+            android:textColor="@color/button_text"
+            android:backgroundTint="@color/buttonn"
             android:drawableLeft="@drawable/ic_check"
+            android:drawableTint="@color/button_text"
             android:layout_marginTop="24dp"
-            android:padding="12dp" />
+            app:cornerRadius="19dp"
+            android:id="@+id/btn_save_changes"
+            />
 
     </LinearLayout>
 </ScrollView>

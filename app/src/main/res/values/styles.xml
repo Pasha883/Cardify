@@ -15,4 +15,29 @@
         <item name="android:windowMinWidthMinor">90%</item>
         <item name="android:windowElevation">0dp</item>
     </style>
+    <!-- Dialog Theme -->
+    <style name="DeleteCardDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="android:background">@drawable/rounded_dialog_background</item>
+        <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
+        <item name="buttonBarNegativeButtonStyle">@style/NegativeButtonStyle</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.Cardify.MediumComponent</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+    <style name="PositiveButtonStyle" parent="Widget.Material3.Button.TextButton">
+        <item name="android:textColor">@color/design_default_color_error</item>
+    </style>
+    <style name="NegativeButtonStyle" parent="Widget.Material3.Button.TextButton">
+        <item name="android:textColor">@color/button_text</item>
+    </style>
+    <style name="ShapeAppearance.Cardify.MediumComponent" parent="ShapeAppearance.Material3.MediumComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">16dp</item>
+    </style>
+    <!-- Filter Dialog Theme -->
+    <style name="FilterDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="android:background">@drawable/rounded_dialog_background</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.Cardify.MediumComponent</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
 </resources>

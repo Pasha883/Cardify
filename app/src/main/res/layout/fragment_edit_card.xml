@@ -2,9 +2,11 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
-    android:paddingTop="16dp">
+    android:paddingTop="16dp"
+    android:background="@color/background">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -18,7 +20,10 @@
             android:layout_height="wrap_content"
             android:hint="Название компании"
             android:drawableLeft="@drawable/ic_company"
-            android:padding="12dp" />
+            android:padding="12dp"
+            android:textColorHint="@color/button_text"
+            android:drawableTint="@color/button_text"
+            android:background="@drawable/search_background"/>
 
         <!-- Специализация -->
         <EditText
@@ -27,7 +32,11 @@
             android:layout_height="wrap_content"
             android:hint="Специализация"
             android:drawableLeft="@drawable/ic_specialization"
-            android:padding="12dp" />
+            android:padding="12dp"
+            android:layout_marginTop="12dp"
+            android:textColorHint="@color/button_text"
+            android:drawableTint="@color/button_text"
+            android:background="@drawable/search_background"/>
 
         <!-- Описание -->
         <EditText
@@ -39,7 +48,11 @@
             android:padding="12dp"
             android:inputType="textMultiLine"
             android:minLines="3"
-            android:maxLines="5" />
+            android:maxLines="5"
+            android:layout_marginTop="12dp"
+            android:textColorHint="@color/button_text"
+            android:drawableTint="@color/button_text"
+            android:background="@drawable/search_background"/>
 
         <!-- Email -->
         <EditText
@@ -49,7 +62,11 @@
             android:hint="Email"
             android:drawableLeft="@drawable/ic_email"
             android:padding="12dp"
-            android:inputType="textEmailAddress" />
+            android:inputType="textEmailAddress"
+            android:layout_marginTop="12dp"
+            android:textColorHint="@color/button_text"
+            android:drawableTint="@color/button_text"
+            android:background="@drawable/search_background"/>
 
         <!-- Телефон -->
         <EditText
@@ -59,7 +76,11 @@
             android:hint="Телефон"
             android:drawableLeft="@drawable/ic_phone"
             android:padding="12dp"
-            android:inputType="phone" />
+            android:inputType="phone"
+            android:layout_marginTop="12dp"
+            android:textColorHint="@color/button_text"
+            android:drawableTint="@color/button_text"
+            android:background="@drawable/search_background"/>
 
         <!-- Сайт -->
         <EditText
@@ -69,7 +90,11 @@
             android:hint="Сайт"
             android:drawableLeft="@drawable/ic_web"
             android:padding="12dp"
-            android:inputType="textUri" />
+            android:inputType="textUri"
+            android:layout_marginTop="12dp"
+            android:textColorHint="@color/button_text"
+            android:drawableTint="@color/button_text"
+            android:background="@drawable/search_background"/>
 
         <!-- Телеграм -->
         <EditText
@@ -78,29 +103,39 @@
             android:layout_height="wrap_content"
             android:hint="Телеграм"
             android:drawableLeft="@drawable/ic_telegram"
-            android:padding="12dp" />
+            android:padding="12dp"
+            android:layout_marginTop="12dp"
+            android:textColorHint="@color/button_text"
+            android:drawableTint="@color/button_text"
+            android:background="@drawable/search_background"/>
 
 
 
         <!-- Кнопка сохранить -->
-        <Button
-            android:id="@+id/btn_save_changes"
+        <com.google.android.material.button.MaterialButton
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:text="Сохранить изменения"
+            android:textColor="@color/button_text"
+            android:backgroundTint="@color/buttonn"
             android:drawableLeft="@drawable/ic_check"
+            android:drawableTint="@color/button_text"
             android:layout_marginTop="24dp"
-            android:padding="12dp" />
+            app:cornerRadius="19dp"
+            android:id="@+id/btn_save_changes"
+            />
 
         <Button
             android:id="@+id/btn_delete_card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="14dp"
             android:text="Удалить визитку"
             android:drawableLeft="@drawable/ic_delete"
-            android:backgroundTint="@android:color/holo_red_dark"
+            android:backgroundTint="@color/design_default_color_error"
             android:textColor="#FFFFFF"/>
+
 
     </LinearLayout>
 </ScrollView>
