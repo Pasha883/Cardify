@@ -115,7 +115,7 @@ public class UserInfoDialogFragment extends DialogFragment {
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser == null) return;
 
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("users").child(currentUser.getUid());
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("users").child(userId);
 
         ref.child("name").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
