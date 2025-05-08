@@ -1,49 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/item_background"
-    android:padding="24dp"
-    android:gravity="center_horizontal">
+    android:layout_marginBottom="8dp"
+    android:padding="12dp"
+    android:backgroundTint="@color/card"
+    app:cardCornerRadius="30dp"
+    app:cardElevation="0dp"
+    app:strokeWidth="0dp"
+    android:clipToOutline="true">
 
-    <TextView
-        android:text="Сохранить визитку?"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp" />
-
-    <TextView
-        android:id="@+id/text_company_name"
-        android:text="Название компании"
-        android:textSize="18sp"
-        android:layout_marginBottom="4dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <TextView
-        android:id="@+id/text_company_spec"
-        android:text="Специализация"
-        android:textSize="16sp"
-        android:layout_marginBottom="24dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <Button
-        android:id="@+id/btn_save"
-        android:text="Сохранить"
-        android:drawableLeft="@drawable/ic_save"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="12dp" />
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:gravity="center_horizontal">
 
-    <Button
-        android:id="@+id/btn_cancel"
-        android:text="Отмена"
-        android:drawableLeft="@drawable/ic_cancel"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@android:color/holo_red_dark"/>
-</LinearLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:text="Сохранить визитку?"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/text_company_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:text="Название компании"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/text_company_spec"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:text="Специализация"
+            android:textSize="16sp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="Сохранить"
+            android:textColor="@color/button_text"
+            android:backgroundTint="@color/buttonn"
+            android:drawableLeft="@drawable/ic_save"
+            android:drawableTint="@color/button_text"
+            app:cornerRadius="19dp"
+            android:id="@+id/btn_save"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="12dp" />
+
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_cancel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Отмена"
+            app:icon="@drawable/ic_cancel"
+            app:iconTint="#FFFFFF"
+            app:backgroundTint="@color/design_default_color_error"
+            android:textColor="#FFFFFF"/>
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

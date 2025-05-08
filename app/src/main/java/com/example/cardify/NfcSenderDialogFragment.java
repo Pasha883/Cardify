@@ -9,9 +9,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -52,8 +55,10 @@ public class NfcSenderDialogFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(requireActivity(), R.style.UserInfoDialog);
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_nfc_sender, null);
+        builder.setView(view);
 
         TextView textView = view.findViewById(R.id.nfc_text);
         ImageView imageView = view.findViewById(R.id.nfc_image);
@@ -109,15 +114,24 @@ public class NfcSenderDialogFragment extends DialogFragment {
             dismiss();
         });
 
-        return new AlertDialog.Builder(requireActivity())
-                .setView(view)
-                .setCancelable(false)
-                .create();
+        return builder.create();
     }
 
     @Override
     public void onStart() {
         super.onStart();
+        Dialog dialog = getDialog();
+        if (dialog != null) {
+            Window window = dialog.getWindow();
+            if (window != null) {
+                // Получаем размеры экрана
+                DisplayMetrics metrics = new DisplayMetrics();
+                requireActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
+                int width = (int) (metrics.widthPixels * 0.80); // 80% ширины
+                window.setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT);
+                window.setBackgroundDrawableResource(android.R.color.transparent); // сохраняем прозрачность
+            }
+        }
         requireActivity().registerReceiver(cardSentReceiver,
                 new IntentFilter("com.example.cardify.ACTION_CARD_SENT"));
     }

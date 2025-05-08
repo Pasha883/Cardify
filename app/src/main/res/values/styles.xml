@@ -40,4 +40,8 @@
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:backgroundDimEnabled">false</item>
     </style>
+    <style name="QrCodeDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
 </resources>

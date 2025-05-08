@@ -1,31 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:padding="24dp"
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:background="@drawable/item_background">
+    android:layout_marginBottom="8dp"
+    android:padding="12dp"
+    android:backgroundTint="@color/card"
+    app:cardCornerRadius="30dp"
+    app:cardElevation="0dp"
+    app:strokeWidth="0dp"
+    android:clipToOutline="true">
 
-    <TextView
-        android:id="@+id/text_company_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Название компании"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="16dp" />
-
-    <ImageView
-        android:id="@+id/image_qr"
-        android:layout_width="250dp"
-        android:layout_height="250dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="16dp" />
-
-    <Button
-        android:id="@+id/btn_save_qr"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Сохранить QR-код" />
-</LinearLayout>
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <TextView
+            android:id="@+id/text_company_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="16dp"
+            android:text="Название компании"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/image_qr"
+            android:layout_width="250dp"
+            android:layout_height="250dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="16dp" />
+
+
+        <!-- Кнопка сохранить -->
+        <com.google.android.material.button.MaterialButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="Сохранить QR-код"
+            android:textColor="@color/button_text"
+            android:backgroundTint="@color/buttonn"
+            android:drawableLeft="@drawable/ic_download"
+            android:drawableTint="@color/button_text"
+            android:layout_marginTop="24dp"
+            app:cornerRadius="19dp"
+            android:id="@+id/btn_save_qr"
+            />
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

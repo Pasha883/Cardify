@@ -5,10 +5,12 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.nfc.tech.IsoDep;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +21,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
+import android.view.Window;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.Button;
 import android.widget.TextView;
@@ -39,13 +42,16 @@ public class NfcReceiveDialogFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        View view = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_nfc_receive, null);
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(requireActivity(), R.style.UserInfoDialog);
+        LayoutInflater inflater = requireActivity().getLayoutInflater();
+        View view = inflater.inflate(R.layout.dialog_nfc_receive, null);
+        builder.setView(view);
 
         Button stopButton = view.findViewById(R.id.stop_button);
 
         stopButton.setOnClickListener(v -> dismiss());
 
-        resultTextView = view.findViewById(R.id.text_recived_id);
+        resultTextView = view.findViewById(R.id.nfc_text);
         handleIntent(requireActivity().getIntent());
 
         View[] waves = {
@@ -75,10 +81,24 @@ public class NfcReceiveDialogFragment extends DialogFragment {
             animatorSet.start();
         }
 
-        return new AlertDialog.Builder(requireActivity())
-                .setView(view)
-                .setCancelable(false)
-                .create();
+        return builder.create();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Dialog dialog = getDialog();
+        if (dialog != null) {
+            Window window = dialog.getWindow();
+            if (window != null) {
+                // Получаем размеры экрана
+                DisplayMetrics metrics = new DisplayMetrics();
+                requireActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
+                int width = (int) (metrics.widthPixels * 0.80); // 80% ширины
+                window.setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT);
+                window.setBackgroundDrawableResource(android.R.color.transparent); // сохраняем прозрачность
+            }
+        }
     }
 
     private TextView resultTextView;

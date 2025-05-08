@@ -1,13 +1,17 @@
 package com.example.cardify;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -26,6 +30,7 @@ public class QRCodeDialogFragment extends DialogFragment {
 
     private String cardId;
     private String companyName;
+    LayoutInflater inflater;
 
     public static QRCodeDialogFragment newInstance(String cardId, String companyName) {
         QRCodeDialogFragment fragment = new QRCodeDialogFragment();
@@ -36,10 +41,36 @@ public class QRCodeDialogFragment extends DialogFragment {
         return fragment;
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setStyle(STYLE_NO_TITLE, R.style.UserInfoDialog);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Dialog dialog = getDialog();
+        if (dialog != null) {
+            Window window = dialog.getWindow();
+            if (window != null) {
+                // Получаем размеры экрана
+                DisplayMetrics metrics = new DisplayMetrics();
+                requireActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
+                int width = (int) (metrics.widthPixels * 0.80); // 80% ширины
+                window.setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT);
+                window.setBackgroundDrawableResource(android.R.color.transparent); // сохраняем прозрачность
+            }
+        }
+    }
+
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity(), R.style.UserInfoDialog);
+        inflater = requireActivity().getLayoutInflater();
         View view = LayoutInflater.from(getContext()).inflate(R.layout.dialog_qr_code, null);
+        builder.setView(view);
         cardId = getArguments().getString("cardId");
         companyName = getArguments().getString("companyName");
 
@@ -64,10 +95,11 @@ public class QRCodeDialogFragment extends DialogFragment {
             e.printStackTrace();
         }
 
-        Dialog dialog = new Dialog(requireContext());
+        /*Dialog dialog = new Dialog(requireContext());
         dialog.setContentView(view);
-        dialog.setCanceledOnTouchOutside(true);
-        return dialog;
+        dialog.setCanceledOnTouchOutside(true);*/
+
+        return builder.create();
     }
 
     private void saveImage(Bitmap bitmap, String baseName) {

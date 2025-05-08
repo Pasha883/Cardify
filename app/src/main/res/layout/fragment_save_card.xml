@@ -2,41 +2,84 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="24dp"
-    android:orientation="vertical">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="8dp"
+    android:orientation="vertical"
+    android:background="@color/background">
+
+
+    <com.google.android.material.button.MaterialButton
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:text="Сканировать QR-код"
+        android:textColor="@color/button_text"
+        android:backgroundTint="@color/buttonn"
+        android:drawableLeft="@drawable/ic_qr_scan"
+        android:drawableTint="@color/button_text"
+        app:cornerRadius="19dp"
+        android:id="@+id/btn_scan_qr"
+        />
+
+    <com.google.android.material.button.MaterialButton
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:text="Считать визитку по NFC"
+        android:textColor="@color/button_text"
+        android:backgroundTint="@color/buttonn"
+        android:drawableLeft="@drawable/ic_nfc"
+        android:drawableTint="@color/button_text"
+        app:cornerRadius="19dp"
+        android:id="@+id/btn_nfc_add"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="22dp"
+        />
+
+
+
+
+    <TextView
+        android:id="@+id/tv_my_cards_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Добавить вручную"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="8dp"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp"
+        android:textColor="@color/button_text"/>
 
     <EditText
         android:id="@+id/edit_card_number"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Введите ID (напр. 123)"
+        android:textColorHint="@color/button_text"
         android:inputType="number"
         android:maxLength="3"
         android:drawableLeft="@drawable/ic_id_card"
-        android:padding="12dp" />
+        android:drawableTint="@color/button_text"
+        android:padding="12dp"
+        android:background="@drawable/search_background"/>
 
-    <Button
-        android:id="@+id/btn_add_card"
+    <com.google.android.material.button.MaterialButton
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
         android:text="Добавить визитку"
+        android:textColor="@color/button_text"
+        android:backgroundTint="@color/buttonn"
         android:drawableLeft="@drawable/ic_add"
-        android:layout_marginTop="16dp" />
+        android:drawableTint="@color/button_text"
+        app:cornerRadius="19dp"
+        android:id="@+id/btn_add_card"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="22dp"
+        />
 
-    <Button
-        android:id="@+id/btn_scan_qr"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Сканировать QR-код"
-        android:drawableLeft="@drawable/ic_qr_scan"
-        android:layout_marginTop="12dp" />
 
-    <Button
-        android:id="@+id/btn_nfc_add"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Считать визитку по NFC"
-        android:layout_marginTop="12dp" />
 
 
 </LinearLayout>
