@@ -3,6 +3,7 @@ package com.example.cardify;
 import static android.app.Activity.RESULT_OK;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -10,6 +11,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Base64;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -178,10 +180,10 @@ public class SettingsFragment extends Fragment {
     private void setupLogoutClickListener() {
         mAuth = FirebaseAuth.getInstance();
         logoutLayout.setOnClickListener(v -> {
-            new AlertDialog.Builder(requireContext())
-                    .setTitle("Выйти из аккаунта")
+            AlertDialog dialog = new AlertDialog.Builder(requireContext(), R.style.DeleteCardDialog)
+                    .setTitle("Выйти из аккаунта?")
                     .setMessage("Вы уверены, что хотите выйти из аккаунта?")
-                    .setPositiveButton("Да", (dialog, which) -> {
+                    .setPositiveButton("Да", (dialogInterface, which) -> {
                         mAuth.signOut();
                         Intent intent = new Intent(requireActivity(), MainActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -191,7 +193,24 @@ public class SettingsFragment extends Fragment {
                         }
                     })
                     .setNegativeButton("Отмена", null)
-                    .show();
+                    .create();
+
+            dialog.setOnShowListener(dialogInterface -> {
+                // Получаем ширину экрана
+                DisplayMetrics displayMetrics = new DisplayMetrics();
+                requireActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+                int screenWidth = displayMetrics.widthPixels;
+
+                // Задаем желаемую ширину в пикселях (например, 80% от ширины экрана)
+                int dialogWidth = (int) (screenWidth * 0.8); // 80% от ширины экрана
+
+                // Устанавливаем ширину окна диалога
+                if (dialog.getWindow() != null) {
+                    dialog.getWindow().setLayout(dialogWidth, ViewGroup.LayoutParams.WRAP_CONTENT);
+                }
+            });
+
+            dialog.show();
 
         });
     }
@@ -245,14 +264,32 @@ public class SettingsFragment extends Fragment {
 
         String message = "Название: Cardify\n"
                 + "Версия: " + versionName + "\n"
+                + "Версия CardifyUI: 1.00.0\n"
                 + "PashaCO 2016–2025\n"
                 + "Все права защищены.";
 
-        new androidx.appcompat.app.AlertDialog.Builder(requireContext())
+        AlertDialog dialog = new AlertDialog.Builder(requireContext(), R.style.FilterDialog)
                 .setTitle("О приложении")
                 .setMessage(message)
-                .setPositiveButton("OK", null)
-                .show();
+                .setPositiveButton("Ок", null).create();
+
+        dialog.setOnShowListener(dialogInterface -> {
+            // Получаем ширину экрана
+            DisplayMetrics displayMetrics = new DisplayMetrics();
+            requireActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+            int screenWidth = displayMetrics.widthPixels;
+
+            // Задаем желаемую ширину в пикселях (например, 80% от ширины экрана)
+            int dialogWidth = (int) (screenWidth * 0.8); // 80% от ширины экрана
+
+            // Устанавливаем ширину окна диалога
+            if (dialog.getWindow() != null) {
+                dialog.getWindow().setLayout(dialogWidth, ViewGroup.LayoutParams.WRAP_CONTENT);
+            }
+        });
+
+        dialog.show();
+
     }
 
     private void openFileChooser() {

@@ -1,55 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@drawable/item_background"
-    android:padding="24dp">
+    android:layout_marginBottom="8dp"
+    android:padding="12dp"
+    android:backgroundTint="@color/card"
+    app:cardCornerRadius="30dp"
+    app:cardElevation="0dp"
+    app:strokeWidth="0dp">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="wrap_content">
 
-        <EditText
-            android:id="@+id/nameEditText"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Имя"
-            android:inputType="textPersonName"
-            android:layout_marginBottom="16dp" />
+            android:orientation="vertical"
+            android:padding="24dp">
 
-        <EditText
-            android:id="@+id/emailEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Email"
-            android:inputType="textEmailAddress"
-            android:layout_marginBottom="16dp" />
+            <EditText
+                android:id="@+id/nameEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Имя"
+                android:textColorHint="@color/button_text"
+                android:inputType="text"
+                android:padding="12dp"
+                android:background="@drawable/edit_text_background2"/>
 
-        <EditText
-            android:id="@+id/passwordEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Новый пароль"
-            android:inputType="textPassword"
-            android:layout_marginBottom="16dp" />
+            <EditText
+                android:id="@+id/emailEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Email"
+                android:textColorHint="@color/button_text"
+                android:inputType="text"
+                android:padding="12dp"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/edit_text_background2"/>
 
-        <!-- Новое поле для повторной аутентификации -->
-        <EditText
-            android:id="@+id/currentPasswordEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Текущий пароль (для подтверждения)"
-            android:inputType="textPassword"
-            android:layout_marginBottom="24dp" />
+            <EditText
+                android:id="@+id/passwordEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Новый пароль"
+                android:textColorHint="@color/button_text"
+                android:inputType="textPassword"
+                android:padding="12dp"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/edit_text_background2"
+                app:passwordToggleEnabled="true"/>
 
-        <Button
-            android:id="@+id/saveButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Сохранить"
-            android:drawableLeft="@drawable/ic_save"
-            android:textColor="#FFFFFF" />
+            <EditText
+                android:id="@+id/currentPasswordEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Текущий пароль"
+                android:textColorHint="@color/button_text"
+                android:inputType="textPassword"
+                android:padding="12dp"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/edit_text_background2"
+                app:passwordToggleEnabled="true"/>
 
-    </LinearLayout>
-</ScrollView>
+
+            <com.google.android.material.button.MaterialButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="Сохранить"
+                android:textColor="@color/button_text"
+                android:backgroundTint="@color/buttonn"
+                android:drawableLeft="@drawable/ic_save"
+                android:drawableTint="@color/button_text"
+                android:layout_marginTop="24dp"
+                app:cornerRadius="19dp"
+                android:id="@+id/saveButton"
+                />
+
+        </LinearLayout>
+    </ScrollView>
+</com.google.android.material.card.MaterialCardView>

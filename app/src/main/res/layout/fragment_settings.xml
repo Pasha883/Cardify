@@ -4,22 +4,26 @@
     android:id="@+id/scrollViewSettings"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F5F5">
+    android:background="@color/background">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:paddingHorizontal="16dp">
 
         <!-- Профиль -->
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/profileHeader"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
-            android:backgroundTint="#FFFFFF"
-            >
+            android:background="?attr/selectableItemBackground"
+            android:layout_marginTop="16dp"
+            app:cardBackgroundColor="@color/card"
+            app:cardCornerRadius="19dp"
+            app:cardElevation="0dp"
+            android:clipToOutline="true"
+            app:strokeWidth="0dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -33,29 +37,30 @@
                     android:layout_width="60dp"
                     android:layout_height="60dp"
                     android:layout_marginEnd="16dp"
-                    android:src="@drawable/ic_profile_placeholder"
                     android:scaleType="centerCrop"
-                    app:shapeAppearanceOverlay="@style/RoundedImageView"/>
+                    android:src="@drawable/ic_profile_placeholder"
+                    app:shapeAppearanceOverlay="@style/RoundedImageView" />
 
                 <TextView
                     android:id="@+id/textProfileName"
+                    style="@style/SettingsTitleStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Ваше имя"
-                    android:textColor="#000000"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
+                    android:text="Ваше имя" />
 
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
 
         <!-- Блок настроек -->
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
-            android:backgroundTint="#FFFFFF"
-            >
+            android:layout_marginTop="24dp"
+            app:cardBackgroundColor="@color/card"
+            app:cardCornerRadius="19dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="0dp"
+            android:clipToOutline="true">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -67,65 +72,67 @@
                     android:id="@+id/layoutPrivacy"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackground"
+                    android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:padding="16dp"
-                    android:gravity="center_vertical">
+                    android:padding="16dp">
 
                     <ImageView
                         android:layout_width="24dp"
                         android:layout_height="24dp"
-                        android:src="@drawable/ic_privacy" />
+                        android:src="@drawable/ic_privacy"
+                        app:tint="@color/button_text"/>
 
                     <TextView
+                        style="@style/SettingsItemStyle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
-                        android:text="Приватность"
-                        android:textColor="#000000"
-                        android:textSize="16sp" />
+                        android:text="Приватность" />
                 </LinearLayout>
 
-
                 <!-- Разделитель -->
-                <View
+                <com.google.android.material.divider.MaterialDivider
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="#E0E0E0" />
+                    android:layout_height="1dp" />
 
                 <!-- Тема -->
                 <LinearLayout
                     android:id="@+id/layoutTheme"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackground"
+                    android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:padding="16dp"
-                    android:gravity="center_vertical">
-
-
+                    android:padding="16dp">
 
                     <ImageView
                         android:id="@+id/imageThemeIcon"
                         android:layout_width="24dp"
                         android:layout_height="24dp"
-                        android:src="@drawable/ic_moon" /> <!-- ВАЖНО: без пробела в @drawable/ic_moon -->
+                        android:src="@drawable/ic_moon"
+                        app:tint="@color/button_text"/>
 
                     <TextView
+                        style="@style/SettingsItemStyle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
-                        android:text="Тема"
-                        android:textColor="#000000"
-                        android:textSize="16sp" />
+                        android:text="Тема" />
                 </LinearLayout>
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
 
         <!-- Блок "Другое" -->
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="#FFFFFF"
-            >
+            android:layout_marginTop="24dp"
+            app:cardBackgroundColor="@color/card"
+            app:cardCornerRadius="19dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="0dp"
+            android:clipToOutline="true">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -137,58 +144,59 @@
                     android:id="@+id/layoutAbout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="16dp"
+                    android:background="?attr/selectableItemBackground"
                     android:gravity="center_vertical"
-                    android:background="?attr/selectableItemBackground"> <!-- вот эта строка добавлена -->
+                    android:orientation="horizontal"
+                    android:padding="16dp">
 
                     <ImageView
                         android:layout_width="24dp"
                         android:layout_height="24dp"
-                        android:src="@drawable/ic_about" />
+                        android:src="@drawable/ic_about"
+                        app:tint="@color/button_text"/>
 
                     <TextView
+                        style="@style/SettingsItemStyle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
-                        android:text="О приложении"
-                        android:textColor="#000000"
-                        android:textSize="16sp" />
+                        android:text="О приложении" />
                 </LinearLayout>
 
-
                 <!-- Разделитель -->
-                <View
+                <com.google.android.material.divider.MaterialDivider
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="#E0E0E0" />
+                    android:layout_height="1dp" />
 
                 <!-- Выйти -->
                 <LinearLayout
                     android:id="@+id/layoutLogout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="16dp"
+                    android:background="?attr/selectableItemBackground"
                     android:gravity="center_vertical"
-                    android:background="?attr/selectableItemBackground">
+                    android:orientation="horizontal"
+                    android:padding="16dp">
 
                     <ImageView
                         android:layout_width="24dp"
                         android:layout_height="24dp"
-                        android:src="@drawable/ic_logout" />
+                        android:src="@drawable/ic_logout"
+                        app:tint="@color/button_text"/>
 
                     <TextView
+                        style="@style/SettingsItemStyle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
-                        android:text="Выйти"
-                        android:textColor="#000000"
-                        android:textSize="16sp" />
+                        android:text="Выйти" />
                 </LinearLayout>
-
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="16dp"/>
 
     </LinearLayout>
 </ScrollView>

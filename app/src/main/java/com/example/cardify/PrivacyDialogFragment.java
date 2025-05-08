@@ -3,16 +3,14 @@ package com.example.cardify;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.widget.SwitchCompat;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;
+
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -27,18 +25,20 @@ public class PrivacyDialogFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_privacy_dialog, null);
-        SwitchCompat switchVisibility = view.findViewById(R.id.switchVisibility);
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireContext(), R.style.FilterDialog);
+        LayoutInflater inflater = requireActivity().getLayoutInflater();
+        View view = inflater.inflate(R.layout.fragment_privacy_dialog, null);
+        builder.setView(view);
+
+        SwitchMaterial switchVisibility = view.findViewById(R.id.switchVisibility);
         switchVisibility.setChecked(isVisible);
 
         switchVisibility.setOnCheckedChangeListener((buttonView, isChecked) -> {
             isVisible = isChecked;
-            // Сохрани значение, например в Firebase или SharedPreferences
             saveVisibilityToFirebase(isVisible);
         });
 
-        return new AlertDialog.Builder(requireContext())
-                .setView(view)
+        return builder
                 .setTitle("Приватность")
                 .setPositiveButton("ОК", null)
                 .create();

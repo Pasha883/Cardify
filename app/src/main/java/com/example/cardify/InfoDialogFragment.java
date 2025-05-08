@@ -17,9 +17,12 @@ import androidx.fragment.app.DialogFragment;
 
 import android.provider.MediaStore;
 import android.util.Base64;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -47,6 +50,7 @@ public class InfoDialogFragment extends DialogFragment {
     private ImageView avatarImageView, editIcon;
     private Button deleteAccountButton;
     private Uri imageUri;
+    LayoutInflater inflater;
 
     private static final String IMGBB_API_KEY = "8c60ccf329b617800e1928f60d7c0382";
 
@@ -71,7 +75,10 @@ public class InfoDialogFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.fragment_info_dialog, null);
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity(), R.style.UserInfoDialog);
+        inflater = requireActivity().getLayoutInflater();
+        View view = inflater.inflate(R.layout.fragment_info_dialog, null);
+        builder.setView(view);
 
         userNameTextView = view.findViewById(R.id.userNameTextView);
         emailTextView = view.findViewById(R.id.emailTextView);
@@ -105,7 +112,24 @@ public class InfoDialogFragment extends DialogFragment {
                     .show();
         });
 
-        return new AlertDialog.Builder(requireActivity()).setView(view).create();
+        return builder.create();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Dialog dialog = getDialog();
+        if (dialog != null) {
+            Window window = dialog.getWindow();
+            if (window != null) {
+                // Получаем размеры экрана
+                DisplayMetrics metrics = new DisplayMetrics();
+                requireActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
+                int width = (int) (metrics.widthPixels * 0.80); // 80% ширины
+                window.setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT);
+                window.setBackgroundDrawableResource(android.R.color.transparent); // сохраняем прозрачность
+            }
+        }
     }
 
     private void openFileChooser() {
@@ -141,61 +165,88 @@ public class InfoDialogFragment extends DialogFragment {
     }
 
     private void uploadImageToImgBB(Uri imageUri) {
+        Log.d(TAG, "uploadImageToImgBB started with imageUri: " + imageUri);
         try {
+            Log.d(TAG, "Attempting to get Bitmap from URI.");
             Bitmap bitmap = MediaStore.Images.Media.getBitmap(requireActivity().getContentResolver(), imageUri);
+            Log.d(TAG, "Bitmap loaded successfully.");
 
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            Log.d(TAG, "Compressing bitmap to PNG.");
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
             byte[] imageBytes = stream.toByteArray();
+            Log.d(TAG, "Bitmap compressed, size: " + imageBytes.length + " bytes.");
+
+            Log.d(TAG, "Encoding image to Base64.");
             String base64Image = Base64.encodeToString(imageBytes, Base64.NO_WRAP);
+            Log.d(TAG, "Image encoded to Base64, length: " + base64Image.length());
 
             OkHttpClient client = new OkHttpClient();
+            Log.d(TAG, "Creating request body.");
             RequestBody requestBody = new FormBody.Builder()
                     .add("key", IMGBB_API_KEY)
                     .add("image", base64Image)
                     .build();
+            Log.d(TAG, "Request body created.");
 
+            Log.d(TAG, "Creating request.");
             Request request = new Request.Builder()
                     .url("https://api.imgbb.com/1/upload")
                     .post(requestBody)
                     .build();
+            Log.d(TAG, "Request created.");
 
+            Log.d(TAG, "Sending request to ImgBB.");
             client.newCall(request).enqueue(new Callback() {
                 @Override
                 public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                    Log.e(TAG, "Request to ImgBB failed.", e);
                     requireActivity().runOnUiThread(() ->
                             Toast.makeText(getContext(), "Ошибка загрузки изображения", Toast.LENGTH_SHORT).show());
                 }
 
                 @Override
                 public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                    Log.d(TAG, "Received response from ImgBB.");
                     String resp = response.body().string();
+                    Log.d(TAG, "Response body: " + resp);
+
                     try {
+                        Log.d(TAG, "Parsing JSON response.");
                         JSONObject json = new JSONObject(resp);
                         String url = json.getJSONObject("data").getString("url");
+                        Log.d(TAG, "Image URL extracted: " + url);
 
+                        Log.d(TAG, "Getting current Firebase user.");
                         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
                         if (currentUser != null) {
+                            Log.d(TAG, "Saving avatar URL to Firebase for user: " + currentUser.getUid());
                             FirebaseDatabase.getInstance().getReference("users")
                                     .child(currentUser.getUid())
                                     .child("avatar")
                                     .setValue(url);
+                            Log.d(TAG, "Avatar URL saved to Firebase.");
+                        } else {
+                            Log.w(TAG, "CurrentUser is null. Cannot save avatar URL.");
                         }
 
                         requireActivity().runOnUiThread(() -> {
+                            Log.d(TAG, "Loading image into avatarImageView.");
                             Picasso.get().load(url).into(avatarImageView);
+                            Log.d(TAG, "Image loaded into avatarImageView.");
                             Toast.makeText(getContext(), "Аватар обновлён", Toast.LENGTH_SHORT).show();
                         });
 
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        Log.e(TAG, "Error processing JSON response.", e);
                     }
                 }
             });
 
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Error processing image.", e);
         }
+        Log.d(TAG, "uploadImageToImgBB finished.");
     }
 
     private void deleteAccountAndData() {

@@ -14,10 +14,12 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -41,6 +43,7 @@ public class EditDialogFragment extends DialogFragment {
     private Button saveButton;
     private String userId;
     private String userName;
+    LayoutInflater inflater;
 
     public interface OnDialogCloseListener {
         void onUserInfoDialogClosed();
@@ -63,7 +66,10 @@ public class EditDialogFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.fragment_edit_dialog, null);
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity(), R.style.UserInfoDialog);
+        inflater = requireActivity().getLayoutInflater();
+        View view = inflater.inflate(R.layout.fragment_edit_dialog, null);
+        builder.setView(view);
 
         nameEditText = view.findViewById(R.id.nameEditText);
         emailEditText = view.findViewById(R.id.emailEditText);
@@ -239,8 +245,25 @@ public class EditDialogFragment extends DialogFragment {
 
 
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
-        builder.setView(view);
+        //AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
+        //builder.setView(view);
         return builder.create();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Dialog dialog = getDialog();
+        if (dialog != null) {
+            Window window = dialog.getWindow();
+            if (window != null) {
+                // Получаем размеры экрана
+                DisplayMetrics metrics = new DisplayMetrics();
+                requireActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
+                int width = (int) (metrics.widthPixels * 0.80); // 80% ширины
+                window.setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT);
+                window.setBackgroundDrawableResource(android.R.color.transparent); // сохраняем прозрачность
+            }
+        }
     }
 }

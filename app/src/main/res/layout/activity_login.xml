@@ -2,9 +2,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:gravity="center"
-    android:padding="24dp">
+    android:padding="24dp"
+    android:background="@color/background">
 
     <TextView
         android:layout_width="wrap_content"
@@ -25,7 +27,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Email"
-        android:inputType="textEmailAddress" />
+        android:inputType="textEmailAddress"
+        android:background="@drawable/search_background"
+        android:padding="12dp"/>
 
     <EditText
         android:id="@+id/password"
@@ -33,27 +37,38 @@
         android:layout_height="wrap_content"
         android:hint="Пароль"
         android:inputType="textPassword"
-        android:layout_marginTop="12dp" />
+        android:layout_marginTop="12dp"
+        android:background="@drawable/search_background"
+        android:padding="12dp"/>
 
-    <Button
-        android:id="@+id/btn_login"
+    <com.google.android.material.button.MaterialButton
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
         android:text="Войти"
-        android:layout_marginTop="16dp" />
+        android:textColor="@color/button_text"
+        android:backgroundTint="@color/buttonn"
+        android:drawableLeft="@drawable/ic_login"
+        android:drawableTint="@color/button_text"
+        android:layout_marginTop="24dp"
+        app:cornerRadius="19dp"
+        android:id="@+id/btn_login"
+        />
 
     <ProgressBar
         android:id="@+id/login_progress"
         android:visibility="gone"
         android:layout_marginTop="16dp"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        />
 
     <TextView
         android:id="@+id/link_to_register"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Нет аккаунта? Зарегистрироваться"
-        android:textColor="#1976D2"
-        android:layout_marginTop="24dp" />
+        android:textColor="@color/button_text"
+        android:layout_marginTop="24dp"
+        />
 </LinearLayout>
