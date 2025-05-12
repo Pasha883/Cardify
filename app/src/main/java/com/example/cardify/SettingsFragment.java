@@ -264,7 +264,7 @@ public class SettingsFragment extends Fragment {
 
         String message = "Название: Cardify\n"
                 + "Версия: " + versionName + "\n"
-                + "Версия CardifyUI: 1.00.0\n"
+                + "Версия CardifyUI: 1.02.1\n"
                 + "PashaCO 2016–2025\n"
                 + "Все права защищены.";
 

@@ -49,6 +49,7 @@ public class InfoDialogFragment extends DialogFragment {
     private TextView userNameTextView, emailTextView, createdCountTextView, savedCountTextView;
     private ImageView avatarImageView, editIcon;
     private Button deleteAccountButton;
+    private DatabaseReference vizitRef;
     private Uri imageUri;
     LayoutInflater inflater;
 
@@ -88,6 +89,9 @@ public class InfoDialogFragment extends DialogFragment {
         editIcon = view.findViewById(R.id.editIcon);
         deleteAccountButton = view.findViewById(R.id.deleteAccountButton);
 
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        vizitRef = database.getReference("vizitcards");
+
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             userNameTextView.setText(user.getDisplayName());
@@ -104,12 +108,29 @@ public class InfoDialogFragment extends DialogFragment {
         });
 
         deleteAccountButton.setOnClickListener(v -> {
-            new AlertDialog.Builder(requireContext())
+            AlertDialog dialog = new AlertDialog.Builder(requireContext(), R.style.DeleteCardDialog)
                     .setTitle("Удалить аккаунт")
                     .setMessage("Вы уверены, что хотите удалить аккаунт и все визитки?")
-                    .setPositiveButton("Да", (dialog, which) -> deleteAccountAndData())
+                    .setPositiveButton("Да", (dialogInterface, which) -> deleteAccountAndData())
                     .setNegativeButton("Отмена", null)
-                    .show();
+                    .create();
+
+            dialog.setOnShowListener(dialogInterface -> {
+                // Получаем ширину экрана
+                DisplayMetrics displayMetrics = new DisplayMetrics();
+                requireActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+                int screenWidth = displayMetrics.widthPixels;
+
+                // Задаем желаемую ширину в пикселях (например, 80% от ширины экрана)
+                int dialogWidth = (int) (screenWidth * 0.8); // 80% от ширины экрана
+
+                // Устанавливаем ширину окна диалога
+                if (dialog.getWindow() != null) {
+                    dialog.getWindow().setLayout(dialogWidth, ViewGroup.LayoutParams.WRAP_CONTENT);
+                }
+            });
+
+            dialog.show();
         });
 
         return builder.create();
@@ -254,8 +275,42 @@ public class InfoDialogFragment extends DialogFragment {
         if (user == null) return;
         String uid = user.getUid();
 
+        DatabaseReference savedRef = FirebaseDatabase.getInstance().getReference("users")
+                .child(uid).child("createdVizitcards");
+
+        savedRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                for (DataSnapshot cardSnap : snapshot.getChildren()) {
+                    Log.d("Delete", "Deleting card: " + cardSnap.getKey());
+                    String cardId = cardSnap.getKey();
+                    if (cardId == null) continue;
+
+                    vizitRef.child(cardId).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot cardSnapshot) {
+                            if (cardSnapshot.exists()) {
+                                Vizitka card = cardSnapshot.getValue(Vizitka.class);
+                                vizitRef.child(cardId).removeValue();
+                                Log.d("Delete", "Deleted card: " + card.getCompanyName());
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) { }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) { }
+        });
+
         DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(uid);
         userRef.removeValue();
+
+
 
         user.delete().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
