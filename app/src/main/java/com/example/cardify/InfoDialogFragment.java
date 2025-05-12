@@ -307,14 +307,15 @@ public class InfoDialogFragment extends DialogFragment {
             public void onCancelled(@NonNull DatabaseError error) { }
         });
 
-        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(uid);
-        userRef.removeValue();
+
 
 
 
         user.delete().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 Toast.makeText(getContext(), "Аккаунт удалён", Toast.LENGTH_SHORT).show();
+                DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(uid);
+                userRef.removeValue();
                 startActivity(new Intent(getContext(), LoginActivity.class));
                 requireActivity().finish();
             } else {
