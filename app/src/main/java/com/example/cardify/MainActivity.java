@@ -3,10 +3,14 @@ package com.example.cardify;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.FrameLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -113,6 +117,26 @@ public class MainActivity extends AppCompatActivity {
                 bottomNavigationView.setSelectedItemId(R.id.nav_add);
             }
         }
+
+        View rootView = findViewById(android.R.id.content);
+        ViewCompat.setOnApplyWindowInsetsListener(rootView, (v, insets) -> {
+            Insets systemBarsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            Insets imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime());
+
+            // Apply system bar insets (status bar, navigation bar) as padding
+            v.setPadding(systemBarsInsets.left, systemBarsInsets.top, systemBarsInsets.right, systemBarsInsets.bottom);
+
+            bottomNavigationView.post(() -> {
+                int bottomHeight = bottomNavigationView.getHeight();
+                fragmentContainer.setPadding(0, 0, 0, bottomHeight);
+            });
+
+            // Optionally, you can add padding for the keyboard (IME) as well,
+            // but adjustResize often handles this effectively.
+            // v.setPadding(systemBarsInsets.left, systemBarsInsets.top, systemBarsInsets.right, systemBarsInsets.bottom + imeInsets.bottom);
+
+            return insets;
+        });
 
         // Устанавливаем нижний отступ под BottomNavigationView
         bottomNavigationView.post(() -> {
