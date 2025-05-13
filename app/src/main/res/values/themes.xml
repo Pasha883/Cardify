@@ -3,6 +3,17 @@
     <style name="Base.Theme.Cardify" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="android:statusBarColor">@color/card</item>
+
+        <item name="android:windowLightStatusBar">true</item> <!-- Пример: делаем иконки темными для светлого фона -->
+
+    </style>
+    <style name="Theme.Cardify" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- ... другие атрибуты ... -->
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <!-- Может потребоваться добавить этот атрибут, если у тебя используется тема с полноэкранным режимом -->
+        <item name="android:windowTranslucentStatus">true</item>
+
 
     </style>
 
