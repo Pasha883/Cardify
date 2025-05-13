@@ -1,5 +1,7 @@
 package com.example.cardify;
 
+import android.os.Build;
+
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
@@ -132,8 +134,19 @@ public class NfcSenderDialogFragment extends DialogFragment {
                 window.setBackgroundDrawableResource(android.R.color.transparent); // сохраняем прозрачность
             }
         }
-        requireActivity().registerReceiver(cardSentReceiver,
-                new IntentFilter("com.example.cardify.ACTION_CARD_SENT"));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            // Для API 33+
+            // Если ресивер только для внутренних сообщений или системных:
+            requireActivity().registerReceiver(cardSentReceiver,
+                    new IntentFilter("com.example.cardify.ACTION_CARD_SENT"), Context.RECEIVER_NOT_EXPORTED); // Moved flag here
+            // Если ресивер должен принимать сообщения от других приложений (с осторожностью):
+            // requireContext().registerReceiver(myReceiver, filter, Context.RECEIVER_EXPORTED);
+        } else {
+            // Для API ниже 33
+            requireActivity().registerReceiver(cardSentReceiver,
+                    new IntentFilter("com.example.cardify.ACTION_CARD_SENT"));
+        }
+
     }
 
     @Override
