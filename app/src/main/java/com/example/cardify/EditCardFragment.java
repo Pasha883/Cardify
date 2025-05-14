@@ -23,9 +23,11 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class EditCardFragment extends Fragment {
 
+    // Поля ввода и кнопка сохранения
     private EditText editCompanyName, editCompanySpec, editPhone, editEmail, editAddress, editWebsite, editDescription;
     private Button btnSaveChanges;
 
+    // Редактируемая визитка
     private VizitkaCreated card;
 
     public static EditCardFragment newInstance(VizitkaCreated card) {
@@ -36,11 +38,11 @@ public class EditCardFragment extends Fragment {
         return fragment;
     }
 
+    // Инициализация View и привязка элементов интерфейса
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        // Надуваем макет фрагмента
         View view = inflater.inflate(R.layout.fragment_edit_card, container, false);
 
         editCompanyName = view.findViewById(R.id.edit_company_name);
@@ -52,6 +54,7 @@ public class EditCardFragment extends Fragment {
         editDescription = view.findViewById(R.id.edit_description);
         btnSaveChanges = view.findViewById(R.id.btn_save_changes);
 
+        // Получаем объект визитки из аргументов фрагмента и заполняем поля
         if (getArguments() != null) {
             card = (VizitkaCreated) getArguments().getSerializable("card");
             if (card != null) {
@@ -59,57 +62,13 @@ public class EditCardFragment extends Fragment {
             }
         }
 
+        // Устанавливаем слушатели для кнопок
         btnSaveChanges.setOnClickListener(v -> saveChanges());
         Button deleteBtn = view.findViewById(R.id.btn_delete_card);
-        deleteBtn.setOnClickListener(v -> {
-            AlertDialog dialog = new AlertDialog.Builder(requireContext(), R.style.DeleteCardDialog)
-                    .setTitle("Удалить визитку?")
-                    .setMessage("Вы уверены? Это действие необратимо.")
-                    .setPositiveButton("Да", (dialogInterface, which) -> {
-                        String userId = "";
-                        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-                        if (currentUser != null) {
-                            userId = currentUser.getUid();
-                        }
-                        String cardId = card.id;
-
-                        DatabaseReference db = FirebaseDatabase.getInstance().getReference();
-
-                        // Удаляем из /vizitCards
-                        db.child("vizitcards").child(cardId).removeValue();
-
-                        // Удаляем из /users/{userId}/createdVizitcards
-                        db.child("users").child(userId).child("createdVizitcards").child(cardId).removeValue()
-                                .addOnSuccessListener(aVoid -> {
-                                    Toast.makeText(getContext(), "Визитка удалена", Toast.LENGTH_SHORT).show();
-                                    requireActivity().onBackPressed();
-                                })
-                                .addOnFailureListener(e ->
-                                        Toast.makeText(getContext(), "Ошибка удаления", Toast.LENGTH_SHORT).show()
-                                );
-                    })
-                    .setNegativeButton("Нет", (dialogInterface, which) -> dialogInterface.dismiss())
-                    .create();
-
-            dialog.setOnShowListener(dialogInterface -> {
-                // Получаем ширину экрана
-                DisplayMetrics displayMetrics = new DisplayMetrics();
-                requireActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-                int screenWidth = displayMetrics.widthPixels;
-
-                // Задаем желаемую ширину в пикселях (например, 80% от ширины экрана)
-                int dialogWidth = (int) (screenWidth * 0.8); // 80% от ширины экрана
-
-                // Устанавливаем ширину окна диалога
-                if (dialog.getWindow() != null) {
-                    dialog.getWindow().setLayout(dialogWidth, ViewGroup.LayoutParams.WRAP_CONTENT);
-                }
-            });
-
-            dialog.show();
-        });
+        deleteBtn.setOnClickListener(v -> deleteVizitcard());
 
         return view;
+
     }
 
     private void fillFields(VizitkaCreated card) {
@@ -122,6 +81,7 @@ public class EditCardFragment extends Fragment {
         editDescription.setText(card.description);
     }
 
+    // Сохраняет изменения визитки в базе данных
     private void saveChanges() {
         String updatedName = editCompanyName.getText().toString().trim();
         String updatedSpec = editCompanySpec.getText().toString().trim();
@@ -132,6 +92,7 @@ public class EditCardFragment extends Fragment {
         String updatedDescription = editDescription.getText().toString().trim();
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
+        // Проверка на заполненность обязательного поля
         if (TextUtils.isEmpty(updatedName)) {
             editCompanyName.setError("Название обязательно");
             return;
@@ -146,15 +107,69 @@ public class EditCardFragment extends Fragment {
         card.description = updatedDescription;
         card.creatorId = userId;
 
+        // Получаем ссылку на узел визитки в базе данных
         DatabaseReference ref = FirebaseDatabase.getInstance()
                 .getReference("vizitcards")
                 .child(card.id);
 
+        // Обновляем данные визитки
         ref.setValue(card)
-                .addOnSuccessListener(unused -> {
+                .addOnSuccessListener(unused -> { // При успешном сохранении
                     Toast.makeText(getContext(), "Изменения сохранены", Toast.LENGTH_SHORT).show();
                     requireActivity().getSupportFragmentManager().popBackStack();
                 })
                 .addOnFailureListener(e -> Toast.makeText(getContext(), "Ошибка: " + e.getMessage(), Toast.LENGTH_LONG).show());
+    }
+
+    // Удаляет визитку после подтверждения пользователя
+    private void deleteVizitcard(){
+        // Создание диалогового окна для подтверждения удаления
+        AlertDialog dialog = new AlertDialog.Builder(requireContext(), R.style.DeleteCardDialog)
+                .setTitle("Удалить визитку?")
+                // Сообщение в диалоговом окне
+                .setMessage("Вы уверены? Это действие необратимо.")
+                .setPositiveButton("Да", (dialogInterface, which) -> {
+                    String userId = "";
+                    FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+                    if (currentUser != null) {
+                        userId = currentUser.getUid();
+                    }
+                    String cardId = card.id;
+
+                    DatabaseReference db = FirebaseDatabase.getInstance().getReference();
+
+                    // Удаляем визитку из общего списка визиток
+                    db.child("vizitcards").child(cardId).removeValue();
+
+                    // Удаляем ссылку на визитку из списка созданных визиток пользователя
+                    db.child("users").child(userId).child("createdVizitcards").child(cardId).removeValue()
+                            .addOnSuccessListener(aVoid -> { // При успешном удалении
+                                Toast.makeText(getContext(), "Визитка удалена", Toast.LENGTH_SHORT).show();
+                                requireActivity().onBackPressed();
+                            })
+                            .addOnFailureListener(e -> // При ошибке удаления
+                                    Toast.makeText(getContext(), "Ошибка удаления", Toast.LENGTH_SHORT).show()
+                            );
+                })
+                .setNegativeButton("Нет", (dialogInterface, which) -> dialogInterface.dismiss())
+                .create(); // Создание AlertDialog
+
+        dialog.setOnShowListener(dialogInterface -> {
+            // Получаем ширину экрана
+            DisplayMetrics displayMetrics = new DisplayMetrics();
+            requireActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+            int screenWidth = displayMetrics.widthPixels;
+
+            // Задаем желаемую ширину в пикселях (например, 80% от ширины экрана)
+            int dialogWidth = (int) (screenWidth * 0.8); // 80% от ширины экрана
+
+            // Устанавливаем ширину окна диалога
+            if (dialog.getWindow() != null) {
+                dialog.getWindow().setLayout(dialogWidth, ViewGroup.LayoutParams.WRAP_CONTENT);
+            }
+        });
+
+        // Отображение диалогового окна
+        dialog.show();
     }
 }

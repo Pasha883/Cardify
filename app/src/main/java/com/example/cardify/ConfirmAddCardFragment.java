@@ -28,13 +28,21 @@ import com.google.firebase.database.ValueEventListener;
 
 public class ConfirmAddCardFragment extends DialogFragment {
 
+    // Ключ для передачи cardId в аргументы фрагмента
     private static final String ARG_CARD_ID = "card_id";
+    // ID визитки для сохранения
     private String cardId;
+    // ID текущего пользователя
     private String userId;
 
+    // TextView для отображения названия компании
     private TextView companyNameView;
+    // TextView для отображения специализации компании
     private TextView companySpecView;
+    // Ссылка на базу данных Firebase
     private DatabaseReference database;
+
+    // Статический метод для создания нового экземпляра фрагмента с переданным cardId
 
     public static ConfirmAddCardFragment newInstance(String cardId) {
         ConfirmAddCardFragment fragment = new ConfirmAddCardFragment();
@@ -44,11 +52,11 @@ public class ConfirmAddCardFragment extends DialogFragment {
         return fragment;
     }
 
+    // Метод onCreateView для создания и настройки макета фрагмента
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        // Инфлейт макета фрагмента
         View view = inflater.inflate(R.layout.fragment_confirm_add_card, container, false);
 
         companyNameView = view.findViewById(R.id.text_company_name);
@@ -65,10 +73,11 @@ public class ConfirmAddCardFragment extends DialogFragment {
         btnCancel.setOnClickListener(v -> {
             dismiss();
             requireActivity().getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, new SaveCardFragment()) // или другой нужный фрагмент
+                    .replace(R.id.fragment_container, new SaveCardFragment())
                     .commit();
         });
 
+        // Инициализация ссылки на базу данных Firebase
         database = FirebaseDatabase.getInstance().getReference();
         userId = "";
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -79,6 +88,7 @@ public class ConfirmAddCardFragment extends DialogFragment {
         return view;
     }
 
+    // Метод для загрузки данных визитки по её ID
     private void loadCardData(String cardId) {
         FirebaseDatabase.getInstance().getReference("vizitcards").child(cardId)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -102,7 +112,7 @@ public class ConfirmAddCardFragment extends DialogFragment {
                 });
     }
 
-    private void saveCard2(String cardId) {
+    /*private void saveCardOld(String cardId) {
         String currentUserId = "userID001"; // или получить текущего пользователя
         FirebaseDatabase.getInstance().getReference("users")
                 .child(currentUserId)
@@ -116,7 +126,7 @@ public class ConfirmAddCardFragment extends DialogFragment {
                 .addOnFailureListener(e -> {
                     Toast.makeText(getContext(), "Ошибка при сохранении", Toast.LENGTH_SHORT).show();
                 });
-    }
+    }*/
 
     private void saveCard(String cardId) {
 
