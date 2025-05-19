@@ -1,0 +1,404 @@
+@startuml
+class com.example.cardify.EditCardFragment {
+- EditText editCompanyName
+- Button btnSaveChanges
+- VizitkaCreated card
++ {static} EditCardFragment newInstance(VizitkaCreated)
++ View onCreateView(LayoutInflater,ViewGroup,Bundle)
+- void fillFields(VizitkaCreated)
+- void saveChanges()
+- void deleteVizitcard()
+}
+
+
+class com.example.cardify.VizitkaAdapter {
+- List<Vizitka> vizitkaList
+- Context context
++ ViewHolder onCreateViewHolder(ViewGroup,int)
++ void onBindViewHolder(ViewHolder,int)
++ int getItemCount()
++ void updateList(List<Vizitka>)
+}
+
+
+class com.example.cardify.VizitkaAdapter$ViewHolder {
+~ TextView companyName
+~ Button moreButton
+}
+
+class com.example.cardify.CardHCEService {
+- {static} String TAG
+- {static} byte[] SELECT_APDU_HEADER
+- {static} byte[] STATUS_SUCCESS
+- {static} byte[] STATUS_FAILED
++ {static} String cardId
++ void onCreate()
++ int onStartCommand(Intent,int,int)
++ byte[] processCommandApdu(byte[],Bundle)
++ void onDeactivated(int)
+- byte[] concat(byte[],byte[])
+}
+
+
+class com.example.cardify.SavedCardsFragment {
+- RecyclerView recyclerView
+- VizitkaAdapter adapter
+- List<Vizitka> vizitkaList
+- List<Vizitka> filteredCards
+- List<Vizitka> referenceCards
+- TextView emptyText
+- ImageView plusIcon
+- LinearLayout emptyStateLayout
+~ EditText searchInput
+- DatabaseReference vizitRef
+- Set<String> allSpecializations
+- Set<String> selectedSpecializations
+- String userId
++ View onCreateView(LayoutInflater,ViewGroup,Bundle)
+- void loadVizitki()
+- void showEmptyState(boolean)
+- void applyFilters()
+- void showFilterDialog()
+}
+
+
+class com.example.cardify.CardDetailsFragment {
++ {static} String ARG_VIZITKA
+- Vizitka vizitka
++ {static} CardDetailsFragment newInstance(Vizitka)
++ View onCreateView(LayoutInflater,ViewGroup,Bundle)
+- void setField(View,int,String)
+- void setClickableField(View,int,int,String,FieldType)
+- void decrementUserCount(String)
+- void deleteVizitcard()
+}
+
+
+enum com.example.cardify.FieldType {
++  EMAIL
++  PHONE
++  SITE
++  TG
+}
+
+class com.example.cardify.SettingsFragment {
+- {static} String TAG
+- TextView textProfileName
+- LinearLayout layoutAbout
+- LinearLayout layoutTheme
+- ImageView imageThemeIcon
+- LinearLayout logoutLayout
+- ImageView imageProfile
+~ View profileSection
+- DatabaseReference databaseReference
+- boolean isDarkTheme
+- FirebaseAuth mAuth
+- {static} int PICK_IMAGE_REQUEST
+- Uri imageUri
+- {static} String IMGBB_API_KEY
++ View onCreateView(LayoutInflater,ViewGroup,Bundle)
+- void loadUserProfile()
+- void setupAboutClickListener()
+- void setupThemeClickListener()
+- void setupLogoutClickListener()
+- void applyTheme()
+- void updateThemeIcon()
+- void saveThemePreference(boolean)
+- void showAboutDialog()
+- void openFileChooser()
++ void onActivityResult(int,int,Intent)
+- Bitmap resizeBitmap(Bitmap)
+- void uploadImageToImgBB(Uri)
+- void saveImageUrlToDatabase(String)
+- void updateProfileImage(String)
+- void getVisibilityStatusAndShowDialog()
+}
+
+
+class com.example.cardify.PrivacyDialogFragment {
+- boolean isVisible
++ Dialog onCreateDialog(Bundle)
+- void saveVisibilityToFirebase(boolean)
+}
+
+
+class com.example.cardify.AddCardFragment {
+- EditText etCompanyName
+- MaterialButton btnSave
+- DatabaseReference cardsRef
+- String userId
++ View onCreateView(LayoutInflater,ViewGroup,Bundle)
+- void createNewCard()
+- void saveNewCardToDatabase(String)
+}
+
+
+class com.example.cardify.RegisterActivity {
+- EditText inputEmail
+- Button btnRegister
+- TextView linkToLogin
+- ProgressBar progressBar
+- FirebaseAuth auth
+# void onCreate(Bundle)
+- String generateRandomName()
+}
+
+
+class com.example.cardify.VizitkaCreatedAdapter {
+- List<VizitkaCreated> vizitkaList
+- Context context
++ ViewHolder onCreateViewHolder(ViewGroup,int)
++ void onBindViewHolder(ViewHolder,int)
++ int getItemCount()
+}
+
+
+class com.example.cardify.VizitkaCreatedAdapter$ViewHolder {
+~ TextView companyName
+~ ImageView iconUsers
+~ Button moreButton
+~ ImageButton btnShare
+}
+
+class com.example.cardify.ThemeManager {
+- {static} String PREFS_NAME
+- {static} String KEY_IS_DARK_THEME
++ {static} void saveTheme(Context,boolean)
++ {static} boolean isDarkTheme(Context)
+}
+
+
+class com.example.cardify.MainActivity {
+- FrameLayout fragmentContainer
+- BottomNavigationView bottomNavigationView
+- BottomNavigationView.OnItemSelectedListener navListener
+# void onCreate(Bundle)
++ void goToSaveCardFragment()
++ void goToSavedCardsFragment()
+}
+
+
+class com.example.cardify.QRCodeDialogFragment {
+- String cardId
+- String companyName
+~ LayoutInflater inflater
++ {static} QRCodeDialogFragment newInstance(String,String)
++ void onCreate(Bundle)
++ void onStart()
++ Dialog onCreateDialog(Bundle)
+- void saveImage(Bitmap,String)
+}
+
+
+class com.example.cardify.NfcSenderDialogFragment {
+- {static} String cardIdToSend
+- BroadcastReceiver cardSentReceiver
++ {static} NfcSenderDialogFragment newInstance(String)
++ Dialog onCreateDialog(Bundle)
++ void onStart()
++ void onStop()
+}
+
+
+class com.example.cardify.VizitkaCreated {
++ String id
++ String TG
++ String companyName
++ String companySpec
++ String description
++ String email
++ String phone
++ String site
++ int users
++ String creatorId
+}
+
+class com.example.cardify.NfcReceiveDialogFragment {
+- TextView resultTextView
++ {static} NfcReceiveDialogFragment newInstance()
++ Dialog onCreateDialog(Bundle)
++ void onStart()
+- void handleIntent(Intent)
++ void onResume()
++ void onPause()
+- void onTagDiscovered(Tag)
+- byte[] BuildSelectApdu(String)
+- byte[] hexStringToByteArray(String)
+}
+
+
+class com.example.cardify.LoginActivity {
+- EditText inputEmail
+- Button btnLogin
+- TextView linkToRegister
+- ProgressBar progressBar
+- FirebaseAuth auth
+# void onCreate(Bundle)
+# void onStart()
+}
+
+
+class com.example.cardify.EditDialogFragment {
+- EditText nameEditText
+- Button saveButton
+- String userId
+- String userName
+- DatabaseReference userRef
+~ LayoutInflater inflater
+- InfoDialogFragment.OnDialogCloseListener listener
++ void setOnDialogCloseListener(InfoDialogFragment.OnDialogCloseListener)
++ void onDismiss(DialogInterface)
++ Dialog onCreateDialog(Bundle)
++ void onStart()
+- void saveChanges()
+}
+
+
+interface com.example.cardify.EditDialogFragment$OnDialogCloseListener {
+~ void onUserInfoDialogClosed()
+}
+
+class com.example.cardify.UserInfoDialogFragment {
+~ ImageView avatarImageView
+~ TextView userNameTextView
+~ TextView emailTextView
+~ TextView createdCountTextView
+~ TextView savedCountTextView
+~ LayoutInflater inflater
+- {static} String ARG_USER_ID
+- String userId
++ {static} UserInfoDialogFragment newInstance(String)
++ void onCreate(Bundle)
++ Dialog onCreateDialog(Bundle)
++ void onStart()
+- void loadUserProfile()
+}
+
+
+class com.example.cardify.InfoDialogFragment {
+- {static} int PICK_IMAGE_REQUEST
+- TextView userNameTextView
+- ImageView avatarImageView
+- Button deleteAccountButton
+- DatabaseReference vizitRef
+- Uri imageUri
+~ LayoutInflater inflater
+- {static} String IMGBB_API_KEY
+- OnDialogCloseListener listener
++ void setOnDialogCloseListener(OnDialogCloseListener)
++ void onDismiss(DialogInterface)
++ Dialog onCreateDialog(Bundle)
++ void onStart()
+- void openFileChooser()
++ void onActivityResult(int,int,Intent)
+- void uploadImageToImgBB(Uri)
+- void deleteAccountAndData()
+- void loadUserProfile()
+}
+
+
+interface com.example.cardify.InfoDialogFragment$OnDialogCloseListener {
+~ void onUserInfoDialogClosed()
+}
+
+class com.example.cardify.SaveCardFragment {
+- EditText editCardNumber
+- Button btnAddCard
+- Button btnScanQr
+- Button btnNfcAdd
+- DatabaseReference database
+- String userId
++ View onCreateView(LayoutInflater,ViewGroup,Bundle)
+- void tryAddCard()
+- void incrementUserCount(String)
+}
+
+
+class com.example.cardify.QRScannerFragment {
+- DecoratedBarcodeView barcodeView
+- boolean scanned
+- BarcodeCallback callback
++ View onCreateView(LayoutInflater,ViewGroup,Bundle)
+- String extractCardIdFromUrl(String)
++ void onResume()
++ void onPause()
+}
+
+
+class com.example.cardify.Vizitka {
++ String id
++ String TG
++ String companyName
++ String companySpec
++ String description
++ String email
++ String phone
++ String site
++ String creatorId
++ String getCompanyName()
++ String getSpecialization()
+}
+
+
+class com.example.cardify.ConfirmAddCardFragment {
+- {static} String ARG_CARD_ID
+- String cardId
+- String userId
+- TextView companyNameView
+- TextView companySpecView
+- DatabaseReference database
++ {static} ConfirmAddCardFragment newInstance(String)
++ View onCreateView(LayoutInflater,ViewGroup,Bundle)
+- void loadCardData(String)
+- void saveCard(String)
+- void incrementUserCount(String)
++ void onStart()
+- int dpToPx(int)
+}
+
+
+class com.example.cardify.MyCardsFragment {
+- RecyclerView recyclerView
+- Button btnCreateCard
+- List<VizitkaCreated> myCardsList
+- VizitkaCreatedAdapter adapter
+- LinearLayout emptyStateLayout
++ View onCreateView(LayoutInflater,ViewGroup,Bundle)
+- void loadMyCards()
+- void showEmptyState(boolean)
+}
+
+
+
+
+androidx.fragment.app.Fragment <|-- com.example.cardify.EditCardFragment
+com.example.cardify.Adapter <|-- com.example.cardify.VizitkaAdapter
+com.example.cardify.VizitkaAdapter +.. com.example.cardify.VizitkaAdapter$ViewHolder
+com.example.cardify.ViewHolder <|-- com.example.cardify.VizitkaAdapter$ViewHolder
+android.nfc.cardemulation.HostApduService <|-- com.example.cardify.CardHCEService
+androidx.fragment.app.Fragment <|-- com.example.cardify.SavedCardsFragment
+androidx.fragment.app.Fragment <|-- com.example.cardify.CardDetailsFragment
+androidx.fragment.app.Fragment <|-- com.example.cardify.SettingsFragment
+androidx.fragment.app.DialogFragment <|-- com.example.cardify.PrivacyDialogFragment
+androidx.fragment.app.Fragment <|-- com.example.cardify.AddCardFragment
+androidx.appcompat.app.AppCompatActivity <|-- com.example.cardify.RegisterActivity
+com.example.cardify.Adapter <|-- com.example.cardify.VizitkaCreatedAdapter
+com.example.cardify.VizitkaCreatedAdapter +.. com.example.cardify.VizitkaCreatedAdapter$ViewHolder
+com.example.cardify.ViewHolder <|-- com.example.cardify.VizitkaCreatedAdapter$ViewHolder
+androidx.appcompat.app.AppCompatActivity <|-- com.example.cardify.MainActivity
+androidx.fragment.app.DialogFragment <|-- com.example.cardify.QRCodeDialogFragment
+androidx.fragment.app.DialogFragment <|-- com.example.cardify.NfcSenderDialogFragment
+java.io.Serializable <|.. com.example.cardify.VizitkaCreated
+androidx.fragment.app.DialogFragment <|-- com.example.cardify.NfcReceiveDialogFragment
+androidx.appcompat.app.AppCompatActivity <|-- com.example.cardify.LoginActivity
+androidx.fragment.app.DialogFragment <|-- com.example.cardify.EditDialogFragment
+com.example.cardify.EditDialogFragment +.. com.example.cardify.EditDialogFragment$OnDialogCloseListener
+androidx.fragment.app.DialogFragment <|-- com.example.cardify.UserInfoDialogFragment
+androidx.fragment.app.DialogFragment <|-- com.example.cardify.InfoDialogFragment
+com.example.cardify.InfoDialogFragment +.. com.example.cardify.InfoDialogFragment$OnDialogCloseListener
+androidx.fragment.app.Fragment <|-- com.example.cardify.SaveCardFragment
+androidx.fragment.app.Fragment <|-- com.example.cardify.QRScannerFragment
+java.io.Serializable <|.. com.example.cardify.Vizitka
+androidx.fragment.app.DialogFragment <|-- com.example.cardify.ConfirmAddCardFragment
+androidx.fragment.app.Fragment <|-- com.example.cardify.MyCardsFragment
+@enduml
