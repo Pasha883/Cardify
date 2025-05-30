@@ -3,6 +3,17 @@
 #include <Adafruit_SSD1306.h>
 #include "qrcoderm.h"
 
+#include <BLEDevice.h>
+#include <BLEServer.h>
+#include <BLEUtils.h>
+#include <BLE2902.h>
+
+#define SERVICE_UUID        "6e400001-b5a3-f393-e0a9-e50e24dcca9e"
+#define CHARACTERISTIC_UUID "6e400003-b5a3-f393-e0a9-e50e24dcca9e"
+
+BLECharacteristic *pCharacteristic;
+BLEAdvertising *pAdvertising;
+
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
 #define OLED_RESET -1
@@ -12,8 +23,51 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 #define QR_SCALE 2
 #define GLOW_PADDING 3
 
+class MyServerCallbacks : public BLEServerCallbacks {
+  void onConnect(BLEServer* pServer) override {
+    Serial.println("[ESP32] Устройство подключено — отключаем рекламу");
+    pAdvertising->stop();  // Останавливаем рекламу после подключения
+  }
+
+  void onDisconnect(BLEServer* pServer) override {
+    Serial.println("[ESP32] Устройство отключено");
+
+    // Если хочешь повторно рекламироваться при отключении — раскомментируй:
+    
+    delay(100);
+    pAdvertising->start();
+    Serial.println("[ESP32] Реклама возобновлена");
+    
+  }
+};
+
 void setup() {
   Serial.begin(115200);
+
+  Serial.println("[ESP32] Запуск BLE и рекламы");
+
+  BLEDevice::init("Cardify_Touch_00001");
+
+  BLEServer *pServer = BLEDevice::createServer();
+  pServer->setCallbacks(new MyServerCallbacks());
+
+  BLEService *pService = pServer->createService(SERVICE_UUID);
+
+  pCharacteristic = pService->createCharacteristic(
+                     CHARACTERISTIC_UUID,
+                     BLECharacteristic::PROPERTY_READ |
+                     BLECharacteristic::PROPERTY_NOTIFY
+                   );
+
+  pCharacteristic->setValue("Cardify Ready");
+  pService->start();
+
+  pAdvertising = BLEDevice::getAdvertising();
+  pAdvertising->addServiceUUID(SERVICE_UUID);
+  pAdvertising->setScanResponse(true);
+  pAdvertising->start();
+
+  Serial.println("[ESP32] Реклама запущена");
 
   if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
     Serial.println(F("SSD1309 not found"));

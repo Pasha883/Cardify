@@ -22,6 +22,9 @@ import com.google.firebase.auth.FirebaseUser;
 public class MainActivity extends AppCompatActivity {
     private FrameLayout fragmentContainer;
     private BottomNavigationView bottomNavigationView;
+    private BluetoothService bluetoothService;
+
+    private static MainActivity instance;
 
     private final BottomNavigationView.OnItemSelectedListener navListener =
             item -> {
@@ -46,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        instance = this;
 
         // Применяем тему до инициализации UI
         if (ThemeManager.isDarkTheme(this)) {
@@ -143,6 +147,12 @@ public class MainActivity extends AppCompatActivity {
             int bottomHeight = bottomNavigationView.getHeight();
             fragmentContainer.setPadding(0, 0, 0, bottomHeight);
         });
+
+        BluetoothDeviceHandler.loadData(this);
+        bluetoothService = new BluetoothService();
+        bluetoothService.startScanning();
+
+        //BluetoothDeviceHandler.clearAll(this); //Очитска сохранённых устроств, ТОЛЬКО ДЛЯ ДЕБАГГИНГА!
     }
 
     public void goToSaveCardFragment() {
@@ -159,4 +169,7 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView.setSelectedItemId(R.id.nav_saved);
     }
 
+    public static MainActivity getInstance() {
+        return instance;
+    }
 }
