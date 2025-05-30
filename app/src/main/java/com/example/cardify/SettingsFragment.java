@@ -57,6 +57,7 @@ public class SettingsFragment extends Fragment {
     private LinearLayout layoutTheme;
     private ImageView imageThemeIcon;
     private LinearLayout logoutLayout;
+    private LinearLayout myDevicesLayout;
     private ImageView imageProfile;
     View profileSection;
 
@@ -83,6 +84,7 @@ public class SettingsFragment extends Fragment {
         logoutLayout = view.findViewById(R.id.layoutLogout);
         imageProfile = view.findViewById(R.id.imageProfile);
         profileSection = view.findViewById(R.id.profileHeader); // верхняя часть с аватаркой и именем
+        myDevicesLayout = view.findViewById(R.id.layoutMyDevices);
 
         databaseReference = FirebaseDatabase.getInstance().getReference("users");
 
@@ -101,6 +103,14 @@ public class SettingsFragment extends Fragment {
         layoutPrivacy.setOnClickListener(v -> {
             // Получи текущее значение из Firebase или кэша
             getVisibilityStatusAndShowDialog();
+        });
+
+        myDevicesLayout.setOnClickListener(v -> {
+            MyDevicesFragment fragment = new MyDevicesFragment();
+            getParentFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
+                    .addToBackStack(null)
+                    .commit();
         });
 
         profileSection.setOnClickListener(v -> {
@@ -176,6 +186,7 @@ public class SettingsFragment extends Fragment {
             applyTheme();
         });
     }
+
 
     private void setupLogoutClickListener() {
         mAuth = FirebaseAuth.getInstance();

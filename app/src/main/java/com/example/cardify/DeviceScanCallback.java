@@ -1,5 +1,7 @@
 package com.example.cardify;
 
+import static com.example.cardify.AppContextProvider.getContext;
+
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanResult;
@@ -12,16 +14,20 @@ public class DeviceScanCallback extends ScanCallback {
     public void onScanResult(int callbackType, ScanResult result) {
         BluetoothDevice device = result.getDevice();
         String deviceName = device.getName();
+        String macAddress = device.getAddress();
+        Boolean flag = false;
 
         if (deviceName != null && deviceName.startsWith("Cardify_Touch_")) {
-            if (!BluetoothDeviceHandler.shouldIgnore(deviceName)) {
-                if (!BluetoothDeviceHandler.isAlreadyConnected(deviceName)) {
+            if (!BluetoothDeviceHandler.shouldIgnore(macAddress)) {
+                if (!BluetoothDeviceHandler.isAlreadyConnected(macAddress) && !flag) {
                     showDialogToUser(device);
+
                 } else {
-                    BluetoothConnectionManager.connectToDevice(device);
+                    BluetoothConnectionManager.connectToDevice(getContext(), device);
                 }
             }
         }
+
     }
 
     private void showDialogToUser(BluetoothDevice device) {

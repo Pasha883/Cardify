@@ -53,7 +53,7 @@ dependencies {
     implementation(libs.material)
     implementation("com.github.yalantis:ucrop:2.2.8")
     implementation(libs.appcompat)
-
+    implementation(libs.gson)
 
 
 

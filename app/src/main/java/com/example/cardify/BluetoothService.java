@@ -12,7 +12,7 @@ public class BluetoothService {
     private final DeviceScanCallback scanCallback = new DeviceScanCallback();
 
     private final Handler handler = new Handler(Looper.getMainLooper());
-    private final long SCAN_PERIOD = 1000; // 10 секунд
+    private final long SCAN_PERIOD = 3000; // 10 секунд
 
     private boolean isScanning = false;
 
@@ -28,7 +28,7 @@ public class BluetoothService {
 
         handler.postDelayed(() -> {
             scanner.stopScan(scanCallback);
-            handler.postDelayed(this::scanLoop, 500); // Подождать 2 сек перед следующим сканированием
+            handler.postDelayed(this::scanLoop, 3000); // Подождать 2 сек перед следующим сканированием
         }, SCAN_PERIOD);
     }
 
