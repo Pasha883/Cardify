@@ -54,6 +54,15 @@ public class MyDevicesFragment extends Fragment {
         for (String deviceAddr : savedDevices) {
             BluetoothDeviceModel device = BluetoothDeviceHandler.getDevice(deviceAddr);
 
+            if (device != null){
+                if(BluetoothDeviceHandler.isCurrentlyConnected(device.getMacAddress())){
+                    device.setConnected(true);
+                } else {
+                    device.setConnected(false);
+                }
+                BluetoothDeviceHandler.addOrUpdateDevice(requireContext(), device.getMacAddress(), device);
+            }
+
             //boolean isConnected = BluetoothDeviceHandler.isAlreadyConnected(deviceName);
 
             // Здесь можно расширить данными, если где-то хранишь память и заряд

@@ -12,7 +12,11 @@
 #define CHARACTERISTIC_UUID "6e400003-b5a3-f393-e0a9-e50e24dcca9e"
 
 BLECharacteristic *pCharacteristic;
+BLEServer *pServer;
 BLEAdvertising *pAdvertising;
+
+bool deviceConnected = false;
+bool dataSent = false;
 
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
@@ -23,42 +27,107 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 #define QR_SCALE 2
 #define GLOW_PADDING 3
 
-class MyServerCallbacks : public BLEServerCallbacks {
-  void onConnect(BLEServer* pServer) override {
-    Serial.println("[ESP32] Устройство подключено — отключаем рекламу");
-    pAdvertising->stop();  // Останавливаем рекламу после подключения
-  }
+#define BUTTON_LEFT 12
+#define BUTTON_RIGHT 14
+#define BUTTON_BACK 27
+#define BUTTON_OK 26
 
-  void onDisconnect(BLEServer* pServer) override {
-    Serial.println("[ESP32] Устройство отключено");
-
-    // Если хочешь повторно рекламироваться при отключении — раскомментируй:
-    
-    delay(100);
-    pAdvertising->start();
-    Serial.println("[ESP32] Реклама возобновлена");
-    
-  }
+class Button {
+  public:
+    Button (byte pin) {
+      _pin = pin;
+      pinMode(_pin, INPUT_PULLUP);
+    }
+    bool click() {
+      bool btnState = digitalRead(_pin);
+      if (!btnState && !_flag && millis() - _tmr >= 150) {
+        _flag = true;
+        _tmr = millis();
+        return true;
+      }
+      /*
+      if (!btnState && _flag && millis() - _tmr >= 500) {
+        _tmr = millis ();
+        return true;
+      }
+      */
+      if (btnState && _flag) {
+        _flag = false;
+        _tmr = millis();
+      }
+      
+      return false;
+    }
+  private:
+    byte _pin;
+    uint32_t _tmr;
+    bool _flag;
 };
+
+class MyServerCallbacks : public BLEServerCallbacks {
+    void onConnect(BLEServer* pServer) override {
+        deviceConnected = true;
+        dataSent = false; // Сбрасываем флаг отправки
+        Serial.println("[ESP32] Устройство подключено");
+        pAdvertising->stop();
+    }
+
+    void onDisconnect(BLEServer* pServer) override {
+        deviceConnected = false;
+        dataSent = false;
+        Serial.println("[ESP32] Устройство отключено");
+        delay(500);
+        pAdvertising->start();
+        Serial.println("[ESP32] Реклама возобновлена");
+    }
+};
+
+void sendJsonData() {
+    //if (!deviceConnected || dataSent) return;
+
+    // Формируем JSON данные
+    String json = "{\"device\":\"Cardify_Touch_00001\","
+                  "\"cardId\":\"cardID003\","
+                  "\"buttons\":[\"left\",\"right\",\"back\",\"ok\"]}";
+
+    // Устанавливаем значение характеристики
+    pCharacteristic->setValue(json.c_str());
+    
+    // Отправляем через notify
+    pCharacteristic->notify();
+    dataSent = true;
+    Serial.println("[ESP32] JSON данные отправлены");
+}
+
+Button btnLeft(BUTTON_LEFT);
+Button btnRight(BUTTON_RIGHT);
+Button btnBack(BUTTON_BACK);
+Button btnOk(BUTTON_OK);
 
 void setup() {
   Serial.begin(115200);
 
-  Serial.println("[ESP32] Запуск BLE и рекламы");
+  //pinMode(BUTTON_LEFT, INPUT_PULLUP);
+  //pinMode(BUTTON_RIGHT, INPUT_PULLUP);
+  //pinMode(BUTTON_BACK, INPUT_PULLUP);
+  //pinMode(BUTTON_OK, INPUT_PULLUP);
 
+  Serial.println("[ESP32] Запуск BLE и рекламы");
   BLEDevice::init("Cardify_Touch_00001");
 
-  BLEServer *pServer = BLEDevice::createServer();
+  pServer = BLEDevice::createServer();
   pServer->setCallbacks(new MyServerCallbacks());
 
   BLEService *pService = pServer->createService(SERVICE_UUID);
 
   pCharacteristic = pService->createCharacteristic(
-                     CHARACTERISTIC_UUID,
-                     BLECharacteristic::PROPERTY_READ |
-                     BLECharacteristic::PROPERTY_NOTIFY
-                   );
+      CHARACTERISTIC_UUID,
+      BLECharacteristic::PROPERTY_READ |
+      BLECharacteristic::PROPERTY_NOTIFY |
+      BLECharacteristic::PROPERTY_WRITE
+  );
 
+  pCharacteristic->addDescriptor(new BLE2902());
   pCharacteristic->setValue("Cardify Ready");
   pService->start();
 
@@ -66,8 +135,6 @@ void setup() {
   pAdvertising->addServiceUUID(SERVICE_UUID);
   pAdvertising->setScanResponse(true);
   pAdvertising->start();
-
-  Serial.println("[ESP32] Реклама запущена");
 
   if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
     Serial.println(F("SSD1309 not found"));
@@ -84,7 +151,31 @@ void setup() {
 }
 
 void loop() {
-  // ничего не делаем
+
+  if (deviceConnected && !dataSent) {
+      // Даем клиенту немного времени на подписку, прежде чем отправить данные.
+      // Это "костыль", лучше, если клиент явно запрашивает данные или ESP32 ждет
+      // подтверждения подписки, но для простой отправки при подключении это может помочь.
+      delay(1000); // Задержка 500 мс. Можете подобрать значение.
+      sendJsonData();
+  }
+
+  if(btnOk.click()){
+    Serial.println("data button");
+    sendJsonData();
+  }
+
+  if(btnBack.click()){
+    Serial.println("Button Back");
+  }
+
+  if(btnLeft.click()){
+    Serial.println("Button Left");
+  }
+
+  if(btnRight.click()){
+    Serial.println("Button Right");
+  }
 }
 
 void generateAndDrawQR(String content, String title) {

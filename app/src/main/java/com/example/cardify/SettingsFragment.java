@@ -108,7 +108,7 @@ public class SettingsFragment extends Fragment {
         myDevicesLayout.setOnClickListener(v -> {
             MyDevicesFragment fragment = new MyDevicesFragment();
             getParentFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, fragment)
+                    .replace(R.id.fragment_container, fragment, "MY_DEVICES_FRAGMENT")
                     .addToBackStack(null)
                     .commit();
         });

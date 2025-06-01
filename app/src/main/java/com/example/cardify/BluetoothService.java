@@ -2,19 +2,27 @@ package com.example.cardify;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.le.BluetoothLeScanner;
+import android.content.Context;
 import android.os.Looper;
 
 import android.os.Handler;
 
 public class BluetoothService {
+    private final Context context;
+
     private final BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     private final BluetoothLeScanner scanner = bluetoothAdapter.getBluetoothLeScanner();
-    private final DeviceScanCallback scanCallback = new DeviceScanCallback();
+    private final DeviceScanCallback scanCallback;
 
     private final Handler handler = new Handler(Looper.getMainLooper());
     private final long SCAN_PERIOD = 3000; // 10 секунд
 
     private boolean isScanning = false;
+
+    public BluetoothService(Context context) {
+        this.context = context.getApplicationContext();
+        scanCallback = new DeviceScanCallback(context);
+    }
 
     public void startScanning() {
         isScanning = true;

@@ -22,8 +22,11 @@ public class BluetoothDeviceHandler {
     private static final Gson gson = new Gson();
 
     private static final Set<String> connectedDevices = new HashSet<>();
+    private static final Set<String> currentlyConnectedDevices = new HashSet<>();
     private static final Set<String> ignoredDevices = new HashSet<>();
     private static final Set<String> connectedDevicesInModel = new HashSet<>();
+    private static final Set<String> detectedDevices = new HashSet<>();
+
 
     public static void loadData(Context context) {
         connectedDevices.addAll(SharedPrefsHelper.getSet(context, "connected_devices"));
@@ -65,8 +68,30 @@ public class BluetoothDeviceHandler {
     }
 
     public static void addConnected(String macAddress, Context context) {
-        connectedDevices.add(macAddress);
-        SharedPrefsHelper.saveSet(context, "connected_devices", connectedDevices);
+        if (!connectedDevicesInModel.contains(macAddress)) {
+            connectedDevices.add(macAddress);
+            SharedPrefsHelper.saveSet(context, "connected_devices", connectedDevices);
+        }
+    }
+
+    public static void addCurrentlyConnected(String macAddress) {
+        currentlyConnectedDevices.add(macAddress);
+    }
+
+    public static boolean isCurrentlyConnected(String macAddress) {
+        return currentlyConnectedDevices.contains(macAddress);
+    }
+
+    public static void removeCurrentlyConnected(String macAddress) {
+        currentlyConnectedDevices.remove(macAddress);
+    }
+
+    public static void addDetected(String macAddress) {
+        detectedDevices.add(macAddress);
+    }
+
+    public static boolean isDetected(String macAddress) {
+        return detectedDevices.contains(macAddress);
     }
 
     public static BluetoothDeviceModel getDevice(String macAddress) {

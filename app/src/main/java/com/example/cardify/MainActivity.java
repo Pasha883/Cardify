@@ -1,7 +1,9 @@
 package com.example.cardify;
 
+import android.Manifest;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -148,9 +150,19 @@ public class MainActivity extends AppCompatActivity {
             fragmentContainer.setPadding(0, 0, 0, bottomHeight);
         });
 
+        //TODO: Добавить проверку на активацию поиска девайсов поблизости
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if (!BluetoothConnectionManager.hasBluetoothPermission(this)) {
+                requestPermissions(new String[]{Manifest.permission.BLUETOOTH_CONNECT}, 1001);
+                return;
+            }
+        }
+
         BluetoothDeviceHandler.loadData(this);
-        bluetoothService = new BluetoothService();
+        bluetoothService = new BluetoothService(this);
         bluetoothService.startScanning();
+
+
 
         //BluetoothDeviceHandler.clearAll(this); //Очитска сохранённых устроств, ТОЛЬКО ДЛЯ ДЕБАГГИНГА!
     }
