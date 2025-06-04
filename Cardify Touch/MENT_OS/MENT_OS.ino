@@ -136,7 +136,7 @@ class MyServerCallbacks : public BLEServerCallbacks {
         dataSent = false; // Сбрасываем флаг отправки
         Serial.println("[ESP32] Устройство подключено");
         pAdvertising->stop();
-        //sendJsonData(); // <-- добавить сюда
+        sendJsonData(); // <-- добавить сюда
     }
 
     void onDisconnect(BLEServer* pServer) override {

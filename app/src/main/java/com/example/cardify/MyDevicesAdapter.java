@@ -2,12 +2,15 @@ package com.example.cardify;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.button.MaterialButton;
@@ -54,7 +57,16 @@ public class MyDevicesAdapter extends RecyclerView.Adapter<MyDevicesAdapter.Devi
             holder.iconBattery.setImageResource(R.drawable.ic_battery_none);
         }
 
-
+        holder.btnMore.setOnClickListener(v -> {
+            FragmentActivity activity = (FragmentActivity) context;
+            DeviceManegmentDialogFragment dialog = new DeviceManegmentDialogFragment();
+            dialog.setOnDialogCloseListener(() -> {
+                // Это будет вызвано, когда диалог закроется
+                Log.d("MyDevicesAdapter", "InfoDialogFragment был закрыт");
+                // Здесь можешь обновить UI, например, заново загрузить имя/аватар/визитки
+            });
+            dialog.show(activity.getSupportFragmentManager(), "DeviceManegmentDialog");
+        });
 
         /*if (battery > 75) {
             holder.iconBattery.setImageResource(R.drawable.ic_battery_full);

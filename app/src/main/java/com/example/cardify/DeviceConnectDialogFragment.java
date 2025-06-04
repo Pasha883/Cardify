@@ -24,7 +24,7 @@ public class DeviceConnectDialogFragment extends DialogFragment {
                 .setPositiveButton("Подключить", (dialog, which) -> {
                     BluetoothDeviceHandler.addConnected(device.getAddress(), getContext());
 
-                    BluetoothDeviceModel deviceModel = new BluetoothDeviceModel(device.getName(), device.getAddress(), 0.0f, 1.5f, 0, false, 67);
+                    BluetoothDeviceModel deviceModel = new BluetoothDeviceModel(device.getName(), device.getAddress(), 0.0f, 1.5f, 0, false, 0);
                     BluetoothDeviceHandler.addOrUpdateDevice(getContext(), device.getAddress(), deviceModel);
 
                     BluetoothConnectionManager.connectToDevice(getContext(), device);
