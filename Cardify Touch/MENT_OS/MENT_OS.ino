@@ -8,6 +8,13 @@
 #include <BLEUtils.h>
 #include <BLE2902.h>
 
+#include <Arduino.h>
+
+extern "C" {
+  #include "esp_ota_ops.h"
+  #include "esp_partition.h"
+}
+
 #define SERVICE_UUID        "6e400001-b5a3-f393-e0a9-e50e24dcca9e"
 #define CHARACTERISTIC_UUID "6e400003-b5a3-f393-e0a9-e50e24dcca9e"
 
@@ -64,12 +71,72 @@ class Button {
     bool _flag;
 };
 
+void printFlashInfo() {
+  const esp_partition_t* partition = esp_ota_get_running_partition();
+
+  if (partition != NULL) {
+    Serial.print("Flash partition address: 0x");
+    Serial.println(partition->address, HEX);
+
+    Serial.print("Flash partition size: ");
+    Serial.print(partition->size);
+    Serial.println(" bytes");
+
+    Serial.print("Flash partition label: ");
+    Serial.println(partition->label);
+
+    esp_app_desc_t app_desc;
+    esp_err_t ret = esp_ota_get_partition_description(partition, &app_desc);
+    if (ret == ESP_OK) {
+      Serial.print("App version: ");
+      Serial.println(app_desc.version);
+
+      // app_size в структуре нет, выведем размер из partition
+      Serial.print("App partition size (flash size): ");
+      Serial.print(partition->size);
+      Serial.println(" bytes");
+
+      Serial.print("Project name: ");
+      Serial.println(app_desc.project_name);
+      
+      Serial.print("Build time: ");
+      Serial.print(app_desc.date);
+      Serial.print(" ");
+      Serial.println(app_desc.time);
+
+      Serial.print("IDF version: ");
+      Serial.println(app_desc.idf_ver);
+    } else {
+      Serial.println("Failed to get app description");
+    }
+  } else {
+    Serial.println("Partition not found");
+  }
+}
+
+void sendJsonData() {
+  String json = "{";
+  json += "\"serial\":\"CT-00001\",";
+  json += "\"totalMemory\":1024,";
+  json += "\"systemMemory\":128,";
+  json += "\"usedMemory\":256,";
+  json += "\"savedCards\":12,";
+  json += "\"battery\":87";
+  json += "}";
+
+  pCharacteristic->setValue(json.c_str());
+  pCharacteristic->notify(); // если нужно пуш-уведомление
+  Serial.println("[ESP32] JSON sent:");
+  Serial.println(json);
+}
+
 class MyServerCallbacks : public BLEServerCallbacks {
     void onConnect(BLEServer* pServer) override {
         deviceConnected = true;
         dataSent = false; // Сбрасываем флаг отправки
         Serial.println("[ESP32] Устройство подключено");
         pAdvertising->stop();
+        //sendJsonData(); // <-- добавить сюда
     }
 
     void onDisconnect(BLEServer* pServer) override {
@@ -82,23 +149,6 @@ class MyServerCallbacks : public BLEServerCallbacks {
     }
 };
 
-void sendJsonData() {
-    //if (!deviceConnected || dataSent) return;
-
-    // Формируем JSON данные
-    String json = "{\"device\":\"Cardify_Touch_00001\","
-                  "\"cardId\":\"cardID003\","
-                  "\"buttons\":[\"left\",\"right\",\"back\",\"ok\"]}";
-
-    // Устанавливаем значение характеристики
-    pCharacteristic->setValue(json.c_str());
-    
-    // Отправляем через notify
-    pCharacteristic->notify();
-    dataSent = true;
-    Serial.println("[ESP32] JSON данные отправлены");
-}
-
 Button btnLeft(BUTTON_LEFT);
 Button btnRight(BUTTON_RIGHT);
 Button btnBack(BUTTON_BACK);
@@ -106,6 +156,8 @@ Button btnOk(BUTTON_OK);
 
 void setup() {
   Serial.begin(115200);
+
+  printFlashInfo();
 
   //pinMode(BUTTON_LEFT, INPUT_PULLUP);
   //pinMode(BUTTON_RIGHT, INPUT_PULLUP);
@@ -151,14 +203,6 @@ void setup() {
 }
 
 void loop() {
-
-  if (deviceConnected && !dataSent) {
-      // Даем клиенту немного времени на подписку, прежде чем отправить данные.
-      // Это "костыль", лучше, если клиент явно запрашивает данные или ESP32 ждет
-      // подтверждения подписки, но для простой отправки при подключении это может помочь.
-      delay(1000); // Задержка 500 мс. Можете подобрать значение.
-      sendJsonData();
-  }
 
   if(btnOk.click()){
     Serial.println("data button");

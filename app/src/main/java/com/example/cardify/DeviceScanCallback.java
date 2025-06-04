@@ -30,6 +30,7 @@ public class DeviceScanCallback extends ScanCallback {
                     }
                 } else {
                     if (!BluetoothDeviceHandler.isCurrentlyConnected(macAddress)){
+                        BluetoothDeviceHandler.addCurrentlyConnected(macAddress);
                         BluetoothConnectionManager.connectToDevice(context, device);
                     }
                 }
