@@ -4,6 +4,7 @@ import static android.app.Activity.RESULT_OK;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -18,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -40,6 +42,7 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.stream.IntStream;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -55,6 +58,7 @@ public class SettingsFragment extends Fragment {
     private TextView textProfileName;
     private LinearLayout layoutAbout;
     private LinearLayout layoutTheme;
+    private LinearLayout layoutLanguage;
     private ImageView imageThemeIcon;
     private LinearLayout logoutLayout;
     private ImageView imageProfile;
@@ -83,6 +87,7 @@ public class SettingsFragment extends Fragment {
         logoutLayout = view.findViewById(R.id.layoutLogout);
         imageProfile = view.findViewById(R.id.imageProfile);
         profileSection = view.findViewById(R.id.profileHeader); // верхняя часть с аватаркой и именем
+        layoutLanguage = view.findViewById(R.id.langChange);
 
         databaseReference = FirebaseDatabase.getInstance().getReference("users");
 
@@ -113,6 +118,8 @@ public class SettingsFragment extends Fragment {
             });
             dialog.show(getParentFragmentManager(), "UserInfoDialog");
         });
+
+        layoutLanguage.setOnClickListener(v -> showLanguageDialog());
 
 
         updateThemeIcon();
@@ -181,9 +188,9 @@ public class SettingsFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         logoutLayout.setOnClickListener(v -> {
             AlertDialog dialog = new AlertDialog.Builder(requireContext(), R.style.DeleteCardDialog)
-                    .setTitle("Выйти из аккаунта?")
-                    .setMessage("Вы уверены, что хотите выйти из аккаунта?")
-                    .setPositiveButton("Да", (dialogInterface, which) -> {
+                    .setTitle(getString(R.string.logout_title))
+                    .setMessage(getString(R.string.logout_message))
+                    .setPositiveButton(getString(R.string.yes), (dialogInterface, which) -> {
                         mAuth.signOut();
                         Intent intent = new Intent(requireActivity(), MainActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -192,7 +199,7 @@ public class SettingsFragment extends Fragment {
                             getActivity().finish();
                         }
                     })
-                    .setNegativeButton("Отмена", null)
+                    .setNegativeButton(getString(R.string.cancel), null)
                     .create();
 
             dialog.setOnShowListener(dialogInterface -> {
@@ -228,7 +235,7 @@ public class SettingsFragment extends Fragment {
         intent.putExtra("openSettings", true);
         startActivity(intent);
         //requireActivity().finish();
-        //requireActivity().overridePendingTransition(0, 0);
+        requireActivity().overridePendingTransition(0, 0);
     }
 
     private void updateThemeIcon() {
@@ -252,7 +259,7 @@ public class SettingsFragment extends Fragment {
     }
 
     private void showAboutDialog() {
-        String versionName = "1.0";
+        String versionName = "None";
         try {
             versionName = requireContext()
                     .getPackageManager()
@@ -262,14 +269,14 @@ public class SettingsFragment extends Fragment {
             e.printStackTrace();
         }
 
-        String message = "Название: Cardify\n"
-                + "Версия: " + versionName + "\n"
-                + "Версия CardifyUI: 1.04.3\n"
-                + "PashaCO 2016–2025\n"
-                + "Все права защищены.";
+        String message = getString(R.string.about_app1) + "\n"
+                + getString(R.string.about_app2) + " " + versionName + "\n"
+                + getString(R.string.about_app3) + "\n"
+                + getString(R.string.about_app4) + "\n"
+                + getString(R.string.about_app5);
 
         AlertDialog dialog = new AlertDialog.Builder(requireContext(), R.style.FilterDialog)
-                .setTitle("О приложении")
+                .setTitle(getString(R.string.about))
                 .setMessage(message)
                 .setPositiveButton("Ок", null).create();
 
@@ -297,7 +304,7 @@ public class SettingsFragment extends Fragment {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Выберите изображение"), PICK_IMAGE_REQUEST);
+        startActivityForResult(Intent.createChooser(intent, getString(R.string.pick_image)), PICK_IMAGE_REQUEST);
     }
 
     @Override
@@ -407,4 +414,83 @@ public class SettingsFragment extends Fragment {
             dialog.show(getParentFragmentManager(), "PrivacyDialog");
         });
     }
+
+    private void showLanguageDialog() {
+        String[] languageNames = {getString(R.string.english), getString(R.string.russian)};
+        String[] languageCodes = {"en", "ru"};
+
+        SharedPreferences prefs = requireContext().getSharedPreferences("settings", Context.MODE_PRIVATE);
+        String currentLang = prefs.getString("app_language", "en");
+
+        final int[] checkedItem = {-1}; // выбранный элемент (изменяется в слушателе)
+
+        // Определим индекс текущего языка
+        int currentIndex = IntStream.range(0, languageCodes.length).filter(i -> languageCodes[i].equals(currentLang)).findFirst().orElse(-1);
+
+        Log.d(TAG, "showLanguageDialog: currentLang = " + currentLang + ", currentIndex = " + currentIndex);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext(), R.style.FilterDialog);
+        builder.setTitle(getString(R.string.choose_language));
+
+        builder.setSingleChoiceItems(languageNames, currentIndex, (dialog, which) -> {
+            if (which != currentIndex) {
+                checkedItem[0] = which;
+            } else {
+                checkedItem[0] = -1; // нельзя выбрать текущий
+            }
+        });
+
+        builder.setPositiveButton("OK", (dialog, which) -> {
+            if (checkedItem[0] != -1) {
+                String selectedLang = languageCodes[checkedItem[0]];
+
+                prefs.edit().putString("app_language", selectedLang).apply();
+                LocaleHelper.setLocale(requireContext(), selectedLang);
+
+                Intent intent = new Intent(requireContext(), MainActivity.class);
+                intent.putExtra("openSettings", true);
+                requireActivity().finish();
+                startActivity(intent);
+                requireActivity().overridePendingTransition(0, 0);
+            }
+        });
+
+        builder.setNegativeButton(android.R.string.cancel, null);
+
+        AlertDialog dialog = builder.create();
+
+        dialog.setOnShowListener(d -> {
+            // Standard dialog width setup
+            DisplayMetrics displayMetrics = new DisplayMetrics();
+            requireActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+            int screenWidth = displayMetrics.widthPixels;
+            int dialogWidth = (int) (screenWidth * 0.8);
+            if (dialog.getWindow() != null) {
+                dialog.getWindow().setLayout(dialogWidth, ViewGroup.LayoutParams.WRAP_CONTENT);
+            }
+
+            // Attempt to disable the current language item
+            if (currentIndex != -1) {
+                ListView listView = dialog.getListView();
+                if (listView != null) {
+                    // It's safer to post this to the ListView's message queue
+                    // to ensure it runs after the ListView has had a chance to measure and lay out its children.
+                    listView.post(() -> {
+                        View itemView = listView.getChildAt(currentIndex);
+                        if (itemView != null) {
+                            itemView.setEnabled(false);
+                            itemView.setAlpha(0.5f);
+                            Log.d(TAG, "Disabled item at index: " + currentIndex);
+                        } else {
+                            Log.w(TAG, "Could not get child view at index: " + currentIndex + " to disable.");
+                            // This else block will help you confirm if getChildAt is the issue
+                        }
+                    });
+                }
+            }
+        });
+
+        dialog.show();
+    }
+
 }

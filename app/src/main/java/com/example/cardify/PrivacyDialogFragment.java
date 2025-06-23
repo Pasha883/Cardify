@@ -39,7 +39,7 @@ public class PrivacyDialogFragment extends DialogFragment {
         });
 
         return builder
-                .setTitle("Приватность")
+                .setTitle(getString(R.string.privacy))
                 .setPositiveButton("ОК", null)
                 .create();
     }

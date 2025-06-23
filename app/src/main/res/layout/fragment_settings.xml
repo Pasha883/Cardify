@@ -46,7 +46,7 @@
                     style="@style/SettingsTitleStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Ваше имя" />
+                    android:text="@string/namePlaceholder" />
 
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
@@ -88,7 +88,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
-                        android:text="Приватность" />
+                        android:text="@string/privacy" />
                 </LinearLayout>
 
                 <!-- Разделитель -->
@@ -118,7 +118,37 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
-                        android:text="Тема" />
+                        android:text="@string/theme" />
+                </LinearLayout>
+
+                <!-- Разделитель -->
+                <com.google.android.material.divider.MaterialDivider
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp" />
+
+                <!-- Язык -->
+                <LinearLayout
+                    android:id="@+id/langChange"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackground"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="16dp">
+
+                    <ImageView
+                        android:id="@+id/langChangeIcon"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_lang"
+                        app:tint="@color/button_text"/>
+
+                    <TextView
+                        style="@style/SettingsItemStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:text="@string/language" />
                 </LinearLayout>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
@@ -160,7 +190,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
-                        android:text="О приложении" />
+                        android:text="@string/about" />
                 </LinearLayout>
 
                 <!-- Разделитель -->
@@ -189,7 +219,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
-                        android:text="Выйти" />
+                        android:text="@string/logout" />
                 </LinearLayout>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>

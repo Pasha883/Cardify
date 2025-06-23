@@ -1,6 +1,8 @@
 package com.example.cardify;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -157,6 +159,14 @@ public class MainActivity extends AppCompatActivity {
                 .replace(R.id.fragment_container, new SavedCardsFragment())
                 .commit();
         bottomNavigationView.setSelectedItemId(R.id.nav_saved);
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        SharedPreferences prefs = newBase.getSharedPreferences("settings", Context.MODE_PRIVATE);
+        String lang = prefs.getString("app_language", "en"); // en по умолчанию
+        Context context = LocaleHelper.setLocale(newBase, lang);
+        super.attachBaseContext(context);
     }
 
 }

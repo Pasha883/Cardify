@@ -38,7 +38,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Имя пользователя"
+                android:text="@string/username_placeholder"
                 android:textColor="@color/button_text"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -47,7 +47,7 @@
                 android:id="@+id/editIcon"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:contentDescription="Редактировать"
+                android:contentDescription="@string/edit"
                 android:padding="4dp"
                 android:src="@drawable/ic_edit" />
         </LinearLayout>
@@ -56,7 +56,7 @@
         android:id="@+id/emailTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="user@example.com"
+        android:text="@string/user_example_com"
         android:textColor="@color/button_text"
         android:layout_marginBottom="16dp" />
 
@@ -80,7 +80,7 @@
         android:id="@+id/deleteAccountButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Удалить аккаунт"
+        android:text="@string/delete_account"
         android:textColor="#FFFFFF"
         android:backgroundTint="#D32F2F"
         android:drawableLeft="@drawable/ic_delete"

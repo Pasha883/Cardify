@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Cardify</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="namePlaceholder">Ваше имя</string>
+    <string name="privacy">Приватность</string>
+    <string name="theme">Тема</string>
+    <string name="language">Язык</string>
+    <string name="about">О приложении</string>
+    <string name="logout">Выйти</string>
+    <string name="english">Английский</string>
+    <string name="russian">Русский</string>
+    <string name="choose_language">Выберите язык</string>
+    <string name="about_app1">Название: Cardify</string>
+    <string name="about_app2">Версия: </string>
+    <string name="about_app3">Версия CardifyUI: 1.11.2</string>
+    <string name="about_app4">PashaCO 2016–2025</string>
+    <string name="about_app5">Все права защищены.</string>
+    <string name="pick_image">Выберите изображение</string>
+    <string name="logout_message">Вы уверены, что хотите выйти из аккаунта?</string>
+    <string name="logout_title">Выйти из аккаунта?</string>
+    <string name="cancel">Отмена</string>
+    <string name="yes">Да</string>
+    <string name="privacy_messege">Показывать информацию о моём аккаунте с моими визитками</string>
+    <string name="username_placeholder">Имя пользователя</string>
+    <string name="edit">Редактировать</string>
+    <string name="user_example_com">user@example.com</string>
+    <string name="delete_account">Удалить аккаунт</string>
+    <string name="created">Создано визиток:</string>
+    <string name="saved">Сохранено визиток:</string>
+    <string name="saved_menu">Сохранённые</string>
+    <string name="my_visits_menu">Мои визитки</string>
+    <string name="add_menu">Добавить</string>
+    <string name="settings_menu">Настройки</string>
+</resources>

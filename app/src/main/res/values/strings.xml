@@ -2,4 +2,34 @@
     <string name="app_name">Cardify</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="namePlaceholder">Your name</string>
+    <string name="privacy">Privacy</string>
+    <string name="theme">Theme</string>
+    <string name="language">Language</string>
+    <string name="about">About</string>
+    <string name="logout">Logout</string>
+    <string name="english">English</string>
+    <string name="russian">Russian</string>
+    <string name="choose_language">Choose language</string>
+    <string name="about_app1">Name: Cardify</string>
+    <string name="about_app2">Version: </string>
+    <string name="about_app3">CardifyUI version: 1.11.2</string>
+    <string name="about_app4">PashaCO 2016–2025</string>
+    <string name="about_app5">All rights reserved.</string>
+    <string name="pick_image">Pick image</string>
+    <string name="logout_message">Are you sure you want to log out?</string>
+    <string name="logout_title">Log out?</string>
+    <string name="cancel">Cancel</string>
+    <string name="yes">Yes</string>
+    <string name="privacy_messege">Show my account information with my visits</string>
+    <string name="username_placeholder">Username</string>
+    <string name="edit">Edit</string>
+    <string name="user_example_com">user@example.com</string>
+    <string name="delete_account">Delete account</string>
+    <string name="created">Visits created:</string>
+    <string name="saved">Visits saved:</string>
+    <string name="saved_menu">Saved</string>
+    <string name="my_visits_menu">My visits</string>
+    <string name="add_menu">Add</string>
+    <string name="settings_menu">Settings</string>
 </resources>

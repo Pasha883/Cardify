@@ -156,7 +156,7 @@ public class InfoDialogFragment extends DialogFragment {
     private void openFileChooser() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("image/*");
-        startActivityForResult(Intent.createChooser(intent, "Выберите изображение"), PICK_IMAGE_REQUEST);
+        startActivityForResult(Intent.createChooser(intent, getString(R.string.pick_image)), PICK_IMAGE_REQUEST);
     }
 
     @Override
@@ -359,8 +359,8 @@ public class InfoDialogFragment extends DialogFragment {
         ref.get().addOnSuccessListener(snapshot -> {
             long createdCount = snapshot.child("createdVizitcards").getChildrenCount();
             long savedCount = snapshot.child("savedVizitcards").getChildrenCount();
-            createdCountTextView.setText("Создано визиток: " + createdCount);
-            savedCountTextView.setText("Сохранено визиток: " + savedCount);
+            createdCountTextView.setText(getString(R.string.created) + " " + createdCount);
+            savedCountTextView.setText(getString(R.string.saved) + " " + savedCount);
         });
     }
 }
