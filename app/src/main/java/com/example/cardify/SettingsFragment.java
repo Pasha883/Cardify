@@ -269,9 +269,11 @@ public class SettingsFragment extends Fragment {
             e.printStackTrace();
         }
 
+        String cardifyUIver = "1.11.2";
+
         String message = getString(R.string.about_app1) + "\n"
                 + getString(R.string.about_app2) + " " + versionName + "\n"
-                + getString(R.string.about_app3) + "\n"
+                + getString(R.string.about_app3) + " " + cardifyUIver + "\n"
                 + getString(R.string.about_app4) + "\n"
                 + getString(R.string.about_app5);
 
